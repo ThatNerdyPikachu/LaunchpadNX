@@ -1,6 +1,6 @@
 ﻿namespace LaunchpadNX
 {
-    partial class Form1
+    partial class LaunchpadNX
     {
         /// <summary>
         /// Required designer variable.
@@ -28,13 +28,112 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.atmsCheckbox = new System.Windows.Forms.CheckBox();
+            this.lfsCheckbox = new System.Windows.Forms.CheckBox();
+            this.hbmenuCheckbox = new System.Windows.Forms.CheckBox();
+            this.hbmenuTitleSelect = new System.Windows.Forms.ComboBox();
+            this.sigpatchesCheckbox = new System.Windows.Forms.CheckBox();
+            this.tinfoilCheckbox = new System.Windows.Forms.CheckBox();
+            this.SuspendLayout();
+            // 
+            // atmsCheckbox
+            // 
+            this.atmsCheckbox.AutoSize = true;
+            this.atmsCheckbox.Checked = true;
+            this.atmsCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.atmsCheckbox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.atmsCheckbox.Enabled = false;
+            this.atmsCheckbox.Location = new System.Drawing.Point(12, 12);
+            this.atmsCheckbox.Name = "atmsCheckbox";
+            this.atmsCheckbox.Size = new System.Drawing.Size(109, 17);
+            this.atmsCheckbox.TabIndex = 0;
+            this.atmsCheckbox.Text = "Atmosphere Base";
+            this.atmsCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // lfsCheckbox
+            // 
+            this.lfsCheckbox.AutoSize = true;
+            this.lfsCheckbox.Location = new System.Drawing.Point(127, 12);
+            this.lfsCheckbox.Name = "lfsCheckbox";
+            this.lfsCheckbox.Size = new System.Drawing.Size(77, 17);
+            this.lfsCheckbox.TabIndex = 1;
+            this.lfsCheckbox.Text = "LayeredFS";
+            this.lfsCheckbox.UseVisualStyleBackColor = true;
+            this.lfsCheckbox.CheckedChanged += new System.EventHandler(this.lfsCheckbox_CheckedChanged);
+            // 
+            // hbmenuCheckbox
+            // 
+            this.hbmenuCheckbox.AutoSize = true;
+            this.hbmenuCheckbox.Location = new System.Drawing.Point(210, 12);
+            this.hbmenuCheckbox.Name = "hbmenuCheckbox";
+            this.hbmenuCheckbox.Size = new System.Drawing.Size(64, 17);
+            this.hbmenuCheckbox.TabIndex = 2;
+            this.hbmenuCheckbox.Text = "hbmenu";
+            this.hbmenuCheckbox.UseVisualStyleBackColor = true;
+            this.hbmenuCheckbox.CheckedChanged += new System.EventHandler(this.hbmenuCheckbox_CheckedChanged);
+            // 
+            // hbmenuTitleSelect
+            // 
+            this.hbmenuTitleSelect.Enabled = false;
+            this.hbmenuTitleSelect.FormattingEnabled = true;
+            this.hbmenuTitleSelect.Items.AddRange(new object[] {
+            "Album",
+            "ControllerApplet",
+            "eShop"});
+            this.hbmenuTitleSelect.Location = new System.Drawing.Point(280, 10);
+            this.hbmenuTitleSelect.Name = "hbmenuTitleSelect";
+            this.hbmenuTitleSelect.Size = new System.Drawing.Size(121, 21);
+            this.hbmenuTitleSelect.TabIndex = 3;
+            this.hbmenuTitleSelect.Text = "Album";
+            // 
+            // sigpatchesCheckbox
+            // 
+            this.sigpatchesCheckbox.AutoSize = true;
+            this.sigpatchesCheckbox.Location = new System.Drawing.Point(12, 35);
+            this.sigpatchesCheckbox.Name = "sigpatchesCheckbox";
+            this.sigpatchesCheckbox.Size = new System.Drawing.Size(79, 17);
+            this.sigpatchesCheckbox.TabIndex = 4;
+            this.sigpatchesCheckbox.Text = "Sigpatches";
+            this.sigpatchesCheckbox.UseVisualStyleBackColor = true;
+            this.sigpatchesCheckbox.CheckedChanged += new System.EventHandler(this.sigpatchesCheckbox_CheckedChanged);
+            // 
+            // tinfoilCheckbox
+            // 
+            this.tinfoilCheckbox.AutoSize = true;
+            this.tinfoilCheckbox.Location = new System.Drawing.Point(127, 35);
+            this.tinfoilCheckbox.Name = "tinfoilCheckbox";
+            this.tinfoilCheckbox.Size = new System.Drawing.Size(54, 17);
+            this.tinfoilCheckbox.TabIndex = 5;
+            this.tinfoilCheckbox.Text = "Tinfoil";
+            this.tinfoilCheckbox.UseVisualStyleBackColor = true;
+            this.tinfoilCheckbox.CheckedChanged += new System.EventHandler(this.tinfoilCheckbox_CheckedChanged);
+            // 
+            // LaunchpadNX
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(423, 488);
+            this.Controls.Add(this.tinfoilCheckbox);
+            this.Controls.Add(this.sigpatchesCheckbox);
+            this.Controls.Add(this.hbmenuTitleSelect);
+            this.Controls.Add(this.hbmenuCheckbox);
+            this.Controls.Add(this.lfsCheckbox);
+            this.Controls.Add(this.atmsCheckbox);
+            this.Name = "LaunchpadNX";
+            this.Text = "LaunchpadNX";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion
+
+        private System.Windows.Forms.CheckBox atmsCheckbox;
+        private System.Windows.Forms.CheckBox lfsCheckbox;
+        private System.Windows.Forms.CheckBox hbmenuCheckbox;
+        private System.Windows.Forms.ComboBox hbmenuTitleSelect;
+        private System.Windows.Forms.CheckBox sigpatchesCheckbox;
+        private System.Windows.Forms.CheckBox tinfoilCheckbox;
     }
 }
 

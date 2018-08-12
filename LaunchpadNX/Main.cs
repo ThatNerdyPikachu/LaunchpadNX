@@ -1,20 +1,63 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace LaunchpadNX
 {
-    public partial class Form1 : Form
+    public partial class LaunchpadNX : Form
     {
-        public Form1()
+        private int optionsChecked;
+
+        public LaunchpadNX()
         {
             InitializeComponent();
+            optionsChecked = 1;
+        }
+
+        private void lfsCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (lfsCheckbox.Checked)
+            {
+                optionsChecked += 1;
+            } else
+            {
+                optionsChecked -= 1;
+            }
+        }
+
+        private void hbmenuCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (hbmenuCheckbox.Checked)
+            {
+                optionsChecked += 1;
+                hbmenuTitleSelect.Enabled = true;
+            } else
+            {
+                optionsChecked -= 1;
+                hbmenuTitleSelect.Enabled = false;
+            }
+        }
+
+        private void sigpatchesCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (sigpatchesCheckbox.Checked)
+            {
+                optionsChecked += 1;
+            } else
+            {
+                optionsChecked -= 1;
+            }
+        }
+
+        private void tinfoilCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (tinfoilCheckbox.Checked)
+            {
+                optionsChecked += 1;
+            } else
+            {
+                optionsChecked -= 1;
+            }
         }
     }
 }

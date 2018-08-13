@@ -258,6 +258,21 @@ namespace LaunchpadNX
                 File.Copy("temp\\Checkpoint\\switch\\out\\Checkpoint.nro", "SD Root\\switch\\Checkpoint.nro");
             }
 
+            // sys-ftpd!
+            if (ftpdCheckbox.Checked)
+            {
+                // clone it
+                RunCommand("git clone https://github.com/jakibaki/sys-ftpd.git temp\\sys-ftpd");
+
+                // build it
+                RunCommand("cd temp\\sys-ftpd && make");
+
+                // copy file
+                File.Copy("temp\\sys-ftpd\\sys-ftpd.kip", "SD Root\\cfw\\sys-ftpd.kip");
+
+                hekateConfig.Add("kip1=cfw/sys-ftpd.kip");
+            }
+
             // hekate config (THANKS C#!!)
             System.IO.File.WriteAllLines("SD Root\\hekate_ipl.ini", hekateConfig);
 

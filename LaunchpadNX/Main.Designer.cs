@@ -36,6 +36,8 @@
             this.tinfoilCheckbox = new System.Windows.Forms.CheckBox();
             this.startButton = new System.Windows.Forms.Button();
             this.checkpointCheckbox = new System.Windows.Forms.CheckBox();
+            this.ftpdCheckbox = new System.Windows.Forms.CheckBox();
+            this.idkCheckbox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // atmsCheckbox
@@ -79,8 +81,7 @@
             this.hbmenuTitleSelect.FormattingEnabled = true;
             this.hbmenuTitleSelect.Items.AddRange(new object[] {
             "Album",
-            "Controllers Screen",
-            "eShop"});
+            "Controllers Screen"});
             this.hbmenuTitleSelect.Location = new System.Drawing.Point(279, 10);
             this.hbmenuTitleSelect.Name = "hbmenuTitleSelect";
             this.hbmenuTitleSelect.Size = new System.Drawing.Size(97, 21);
@@ -109,7 +110,7 @@
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(12, 58);
+            this.startButton.Location = new System.Drawing.Point(10, 88);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(364, 23);
             this.startButton.TabIndex = 7;
@@ -127,11 +128,33 @@
             this.checkpointCheckbox.Text = "Checkpoint";
             this.checkpointCheckbox.UseVisualStyleBackColor = true;
             // 
+            // ftpdCheckbox
+            // 
+            this.ftpdCheckbox.AutoSize = true;
+            this.ftpdCheckbox.Location = new System.Drawing.Point(12, 58);
+            this.ftpdCheckbox.Name = "ftpdCheckbox";
+            this.ftpdCheckbox.Size = new System.Drawing.Size(62, 17);
+            this.ftpdCheckbox.TabIndex = 9;
+            this.ftpdCheckbox.Text = "sys-ftpd";
+            this.ftpdCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // idkCheckbox
+            // 
+            this.idkCheckbox.AutoSize = true;
+            this.idkCheckbox.Location = new System.Drawing.Point(127, 58);
+            this.idkCheckbox.Name = "idkCheckbox";
+            this.idkCheckbox.Size = new System.Drawing.Size(41, 17);
+            this.idkCheckbox.TabIndex = 10;
+            this.idkCheckbox.Text = "Idk";
+            this.idkCheckbox.UseVisualStyleBackColor = true;
+            // 
             // LaunchpadNX
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(386, 89);
+            this.ClientSize = new System.Drawing.Size(386, 123);
+            this.Controls.Add(this.idkCheckbox);
+            this.Controls.Add(this.ftpdCheckbox);
             this.Controls.Add(this.checkpointCheckbox);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.tinfoilCheckbox);
@@ -157,6 +180,8 @@
         private System.Windows.Forms.CheckBox tinfoilCheckbox;
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.CheckBox checkpointCheckbox;
+        private System.Windows.Forms.CheckBox ftpdCheckbox;
+        private System.Windows.Forms.CheckBox idkCheckbox;
     }
 }
 

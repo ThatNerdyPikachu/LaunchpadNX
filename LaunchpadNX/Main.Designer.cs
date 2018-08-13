@@ -34,7 +34,6 @@
             this.hbmenuTitleSelect = new System.Windows.Forms.ComboBox();
             this.sigpatchesCheckbox = new System.Windows.Forms.CheckBox();
             this.tinfoilCheckbox = new System.Windows.Forms.CheckBox();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.startButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -61,7 +60,6 @@
             this.lfsCheckbox.TabIndex = 1;
             this.lfsCheckbox.Text = "LayeredFS";
             this.lfsCheckbox.UseVisualStyleBackColor = true;
-            this.lfsCheckbox.CheckedChanged += new System.EventHandler(this.lfsCheckbox_CheckedChanged);
             // 
             // hbmenuCheckbox
             // 
@@ -80,11 +78,11 @@
             this.hbmenuTitleSelect.FormattingEnabled = true;
             this.hbmenuTitleSelect.Items.AddRange(new object[] {
             "Album",
-            "ControllerApplet",
+            "Controllers Screen",
             "eShop"});
-            this.hbmenuTitleSelect.Location = new System.Drawing.Point(280, 10);
+            this.hbmenuTitleSelect.Location = new System.Drawing.Point(279, 10);
             this.hbmenuTitleSelect.Name = "hbmenuTitleSelect";
-            this.hbmenuTitleSelect.Size = new System.Drawing.Size(121, 21);
+            this.hbmenuTitleSelect.Size = new System.Drawing.Size(97, 21);
             this.hbmenuTitleSelect.TabIndex = 3;
             this.hbmenuTitleSelect.Text = "Album";
             // 
@@ -97,7 +95,6 @@
             this.sigpatchesCheckbox.TabIndex = 4;
             this.sigpatchesCheckbox.Text = "Sigpatches";
             this.sigpatchesCheckbox.UseVisualStyleBackColor = true;
-            this.sigpatchesCheckbox.CheckedChanged += new System.EventHandler(this.sigpatchesCheckbox_CheckedChanged);
             // 
             // tinfoilCheckbox
             // 
@@ -108,31 +105,23 @@
             this.tinfoilCheckbox.TabIndex = 5;
             this.tinfoilCheckbox.Text = "Tinfoil";
             this.tinfoilCheckbox.UseVisualStyleBackColor = true;
-            this.tinfoilCheckbox.CheckedChanged += new System.EventHandler(this.tinfoilCheckbox_CheckedChanged);
-            // 
-            // progressBar
-            // 
-            this.progressBar.Location = new System.Drawing.Point(12, 75);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(399, 23);
-            this.progressBar.TabIndex = 6;
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(166, 116);
+            this.startButton.Location = new System.Drawing.Point(12, 58);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(75, 23);
+            this.startButton.Size = new System.Drawing.Size(364, 23);
             this.startButton.TabIndex = 7;
             this.startButton.Text = "Start!";
             this.startButton.UseVisualStyleBackColor = true;
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
             // LaunchpadNX
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(423, 151);
+            this.ClientSize = new System.Drawing.Size(386, 89);
             this.Controls.Add(this.startButton);
-            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.tinfoilCheckbox);
             this.Controls.Add(this.sigpatchesCheckbox);
             this.Controls.Add(this.hbmenuTitleSelect);
@@ -154,7 +143,6 @@
         private System.Windows.Forms.ComboBox hbmenuTitleSelect;
         private System.Windows.Forms.CheckBox sigpatchesCheckbox;
         private System.Windows.Forms.CheckBox tinfoilCheckbox;
-        private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Button startButton;
     }
 }

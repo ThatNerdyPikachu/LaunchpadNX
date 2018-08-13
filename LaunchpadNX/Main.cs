@@ -170,10 +170,9 @@ namespace LaunchpadNX
                 {
                     File.Copy("files\\controllers.json", "temp\\nx-hbloader\\hbl.json", true);
                     tid = "0100000000001003";
-                } else if (hbmenuTitleSelect.Text == "eShop")
+                } else
                 {
-                    File.Copy("files\\eshop.json", "temp\\nx-hbloader\\hbl.json", true);
-                    tid = "0x010000000000100B";
+                    File.Copy("files\\album.json", "temp\\nx-hbloader\\hbl.json", true);
                 }
 
                 // build it

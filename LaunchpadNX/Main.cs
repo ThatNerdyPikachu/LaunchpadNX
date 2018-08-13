@@ -300,15 +300,12 @@ namespace LaunchpadNX
             // switchident
             if (switchidentCheckbox.Checked)
             {
-                // install deps
-                RunCommand("pacman -S switch-sdl2_ttf switch-sdl2_gfx switch-sdl2_image switch-libpng " +
-                    "switch-libjpeg-turbo switch-sdl2 switch-freetype --noconfirm --needed");
 
                 // clone it
                 RunCommand("git clone https://github.com/joel16/SwitchIdent.git temp\\SwitchIdent");
 
                 // build it
-                RunCommand("cd temp\\SwitchIdent\\gui && make -j");
+                RunCommand("cd temp\\SwitchIdent\\console && make -j");
 
                 // create needed directory
                 if (!Directory.Exists("SD Root\\switch"))
@@ -317,7 +314,7 @@ namespace LaunchpadNX
                 }
 
                 // copy file
-                File.Copy("temp\\SwitchIdent\\gui\\gui.nro", "SD Root\\switch\\SwitchIdent.nro");
+                File.Copy("temp\\SwitchIdent\\console\\console.nro", "SD Root\\switch\\SwitchIdent.nro");
             }
 
             // hekate config (THANKS C#!!)

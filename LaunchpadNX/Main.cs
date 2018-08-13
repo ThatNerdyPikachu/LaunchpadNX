@@ -116,8 +116,8 @@ namespace LaunchpadNX
             // create "SD Root"
             Directory.CreateDirectory("SD Root");
 
-            // install devkitARM
-            RunCommand("pacman -S devkitARM --noconfirm --needed");
+            // install switch dev tools
+            RunCommand("pacman -S switch-dev devkitARM --noconfirm --needed");
             
             // Hekate
             RunCommand("git clone https://github.com/CTCaer/hekate.git temp\\hekate && cd temp\\hekate && make -j");
@@ -239,7 +239,7 @@ namespace LaunchpadNX
             // checkpoint!
             if (checkpointCheckbox.Checked)
             {
-                // install freetype (shouldn't be needed due to hbmenu, but hey, you never know!)
+                // install freetype
                 RunCommand("pacman -S switch-freetype --noconfirm --needed");
 
                 // clone it
@@ -271,6 +271,53 @@ namespace LaunchpadNX
                 File.Copy("temp\\sys-ftpd\\sys-ftpd.kip", "SD Root\\cfw\\sys-ftpd.kip");
 
                 hekateConfig.Add("kip1=cfw/sys-ftpd.kip");
+            }
+
+            // hbas
+            if (hbasCheckbox.Checked)
+            {
+                // install deps
+                RunCommand("pacman -S switch-curl switch-bzip2 switch-freetype switch-libjpeg-turbo switch-sdl2 " +
+                    "switch-sdl2_gfx switch-sdl2_image switch-sdl2_ttf switch-zlib " +
+                    "switch-libpng --noconfirm --needed");
+
+                // clone it
+                RunCommand("git clone https://github.com/vgmoose/appstorenx.git temp\\appstorenx --recursive");
+
+                // build it
+                RunCommand("cd temp\\appstorenx && make -j");
+
+                // create needed directory
+                if (!Directory.Exists("SD Root\\switch"))
+                {
+                    Directory.CreateDirectory("SD Root\\switch");
+                }
+
+                // copy file
+                File.Copy("temp\\appstorenx\\appstore.nro", "SD Root\\switch\\appstore.nro");
+            }
+
+            // switchident
+            if (switchidentCheckbox.Checked)
+            {
+                // install deps
+                RunCommand("pacman -S switch-sdl2_ttf switch-sdl2_gfx switch-sdl2_image switch-libpng " +
+                    "switch-libjpeg-turbo switch-sdl2 switch-freetype --noconfirm --needed");
+
+                // clone it
+                RunCommand("git clone https://github.com/joel16/SwitchIdent.git temp\\SwitchIdent");
+
+                // build it
+                RunCommand("cd temp\\SwitchIdent\\gui && make -j");
+
+                // create needed directory
+                if (!Directory.Exists("SD Root\\switch"))
+                {
+                    Directory.CreateDirectory("SD Root\\switch");
+                }
+
+                // copy file
+                File.Copy("temp\\SwitchIdent\\gui\\gui.nro", "SD Root\\switch\\SwitchIdent.nro");
             }
 
             // hekate config (THANKS C#!!)

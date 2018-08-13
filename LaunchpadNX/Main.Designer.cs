@@ -37,7 +37,8 @@
             this.startButton = new System.Windows.Forms.Button();
             this.checkpointCheckbox = new System.Windows.Forms.CheckBox();
             this.ftpdCheckbox = new System.Windows.Forms.CheckBox();
-            this.idkCheckbox = new System.Windows.Forms.CheckBox();
+            this.hbasCheckbox = new System.Windows.Forms.CheckBox();
+            this.switchidentCheckbox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // atmsCheckbox
@@ -138,22 +139,33 @@
             this.ftpdCheckbox.Text = "sys-ftpd";
             this.ftpdCheckbox.UseVisualStyleBackColor = true;
             // 
-            // idkCheckbox
+            // hbasCheckbox
             // 
-            this.idkCheckbox.AutoSize = true;
-            this.idkCheckbox.Location = new System.Drawing.Point(127, 58);
-            this.idkCheckbox.Name = "idkCheckbox";
-            this.idkCheckbox.Size = new System.Drawing.Size(41, 17);
-            this.idkCheckbox.TabIndex = 10;
-            this.idkCheckbox.Text = "Idk";
-            this.idkCheckbox.UseVisualStyleBackColor = true;
+            this.hbasCheckbox.AutoSize = true;
+            this.hbasCheckbox.Location = new System.Drawing.Point(127, 58);
+            this.hbasCheckbox.Name = "hbasCheckbox";
+            this.hbasCheckbox.Size = new System.Drawing.Size(127, 17);
+            this.hbasCheckbox.TabIndex = 10;
+            this.hbasCheckbox.Text = "Homebrew App Store";
+            this.hbasCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // switchidentCheckbox
+            // 
+            this.switchidentCheckbox.AutoSize = true;
+            this.switchidentCheckbox.Location = new System.Drawing.Point(260, 58);
+            this.switchidentCheckbox.Name = "switchidentCheckbox";
+            this.switchidentCheckbox.Size = new System.Drawing.Size(82, 17);
+            this.switchidentCheckbox.TabIndex = 11;
+            this.switchidentCheckbox.Text = "SwitchIdent";
+            this.switchidentCheckbox.UseVisualStyleBackColor = true;
             // 
             // LaunchpadNX
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(386, 123);
-            this.Controls.Add(this.idkCheckbox);
+            this.Controls.Add(this.switchidentCheckbox);
+            this.Controls.Add(this.hbasCheckbox);
             this.Controls.Add(this.ftpdCheckbox);
             this.Controls.Add(this.checkpointCheckbox);
             this.Controls.Add(this.startButton);
@@ -181,7 +193,8 @@
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.CheckBox checkpointCheckbox;
         private System.Windows.Forms.CheckBox ftpdCheckbox;
-        private System.Windows.Forms.CheckBox idkCheckbox;
+        private System.Windows.Forms.CheckBox hbasCheckbox;
+        private System.Windows.Forms.CheckBox switchidentCheckbox;
     }
 }
 

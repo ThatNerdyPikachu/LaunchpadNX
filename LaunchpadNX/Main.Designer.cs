@@ -102,6 +102,7 @@
             // tinfoilCheckbox
             // 
             this.tinfoilCheckbox.AutoSize = true;
+            this.tinfoilCheckbox.Enabled = false;
             this.tinfoilCheckbox.Location = new System.Drawing.Point(127, 35);
             this.tinfoilCheckbox.Name = "tinfoilCheckbox";
             this.tinfoilCheckbox.Size = new System.Drawing.Size(54, 17);
@@ -122,6 +123,7 @@
             // checkpointCheckbox
             // 
             this.checkpointCheckbox.AutoSize = true;
+            this.checkpointCheckbox.Enabled = false;
             this.checkpointCheckbox.Location = new System.Drawing.Point(210, 35);
             this.checkpointCheckbox.Name = "checkpointCheckbox";
             this.checkpointCheckbox.Size = new System.Drawing.Size(80, 17);
@@ -142,6 +144,7 @@
             // hbasCheckbox
             // 
             this.hbasCheckbox.AutoSize = true;
+            this.hbasCheckbox.Enabled = false;
             this.hbasCheckbox.Location = new System.Drawing.Point(127, 58);
             this.hbasCheckbox.Name = "hbasCheckbox";
             this.hbasCheckbox.Size = new System.Drawing.Size(127, 17);
@@ -152,6 +155,7 @@
             // switchidentCheckbox
             // 
             this.switchidentCheckbox.AutoSize = true;
+            this.switchidentCheckbox.Enabled = false;
             this.switchidentCheckbox.Location = new System.Drawing.Point(260, 58);
             this.switchidentCheckbox.Name = "switchidentCheckbox";
             this.switchidentCheckbox.Size = new System.Drawing.Size(82, 17);

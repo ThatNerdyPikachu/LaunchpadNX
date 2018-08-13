@@ -19,9 +19,17 @@ namespace LaunchpadNX
             if (hbmenuCheckbox.Checked)
             {
                 hbmenuTitleSelect.Enabled = true;
+                tinfoilCheckbox.Enabled = true;
+                checkpointCheckbox.Enabled = true;
+                hbasCheckbox.Enabled = true;
+                switchidentCheckbox.Enabled = true;
             } else
             {
                 hbmenuTitleSelect.Enabled = false;
+                tinfoilCheckbox.Enabled = false;
+                checkpointCheckbox.Enabled = false;
+                hbasCheckbox.Enabled = false;
+                switchidentCheckbox.Enabled = false;
             }
         }
 

@@ -8,7 +8,6 @@ namespace LaunchpadNX
 {
     public partial class LaunchpadNX : Form
     {
-
         public LaunchpadNX()
         {
             InitializeComponent();
@@ -109,7 +108,6 @@ namespace LaunchpadNX
                 "",
                 "[CFW]",
                 "atmosphere=1",
-                "secmon=cfw/exosphere.bin",
                 "kip1=cfw/loader.kip",
                 "kip1=cfw/pm.kip",
                 "kip1=cfw/sm.kip"
@@ -129,16 +127,18 @@ namespace LaunchpadNX
             //
             // clone it
             RunCommand("git clone https://github.com/Atmosphere-NX/Atmosphere.git temp\\Atmosphere");
-            
+
+            // apply patch
+            RunCommand("cd temp\\Atmosphere && git apply ../../files/stub-out-exosphere-api-checks.patch");
+
             // build it
-            RunCommand("cd temp\\Atmosphere\\exosphere && make -j4 && cd ../stratosphere && make -j4");
+            RunCommand("cd temp\\Atmosphere\\stratosphere && make -j4");
 
             // create needed directories
             Directory.CreateDirectory("SD Root\\cfw");
             Directory.CreateDirectory("SD Root\\atmosphere\\titles\\0100000000000036\\exefs");
 
             // copy files
-            File.Copy("temp\\Atmosphere\\exosphere\\exosphere.bin", "SD Root\\cfw\\exosphere.bin");
             File.Copy("temp\\Atmosphere\\stratosphere\\creport\\creport.nso", "SD Root\\atmosphere\\titles\\0100000000000036\\exefs\\main");
             File.Copy("temp\\Atmosphere\\stratosphere\\creport\\creport.npdm", "SD Root\\atmosphere\\titles\\0100000000000036\\exefs\\main.npdm");
             File.Copy("temp\\Atmosphere\\stratosphere\\loader\\loader.kip", "SD Root\\cfw\\loader.kip");
@@ -239,6 +239,9 @@ namespace LaunchpadNX
 
             // hekate config (THANKS C#!!)
             System.IO.File.WriteAllLines("SD Root\\hekate_ipl.ini", hekateConfig);
+
+            // cleanup
+            RunCommand("rmdir /S /Q temp");
 
             // we are done!
             MessageBox.Show("Done! Copy the contents of the \"SD Root\" folder to your SD Card, then launch the CFW.bin payload using your favorite method!", 

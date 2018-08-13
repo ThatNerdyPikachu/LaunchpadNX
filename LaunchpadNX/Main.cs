@@ -120,7 +120,7 @@ namespace LaunchpadNX
             RunCommand("pacman -S devkitARM --noconfirm --needed");
             
             // Hekate
-            RunCommand("git clone https://github.com/CTCaer/hekate.git temp\\hekate && cd temp\\hekate && make -j2");
+            RunCommand("git clone https://github.com/CTCaer/hekate.git temp\\hekate && cd temp\\hekate && make -j");
             File.Copy("temp\\hekate\\ipl.bin", "CFW.bin", true);
 
             // Atmosphere base (always ran)
@@ -132,7 +132,7 @@ namespace LaunchpadNX
             RunCommand("cd temp\\Atmosphere && git apply ../../files/stub-out-exosphere-api-checks.patch");
 
             // build it
-            RunCommand("cd temp\\Atmosphere\\stratosphere && make -j2");
+            RunCommand("cd temp\\Atmosphere\\stratosphere && make -j");
 
             // create needed directories
             Directory.CreateDirectory("SD Root\\cfw");
@@ -177,7 +177,7 @@ namespace LaunchpadNX
                 }
 
                 // build it
-                RunCommand("cd temp\\nx-hbloader && make -j2");
+                RunCommand("cd temp\\nx-hbloader && make -j");
 
                 // create needed directories
                 Directory.CreateDirectory("SD Root\\atmosphere\\titles\\" + tid + "\\exefs");
@@ -197,7 +197,7 @@ namespace LaunchpadNX
                 RunCommand("git clone https://github.com/switchbrew/nx-hbmenu.git temp\\nx-hbmenu");
 
                 // build it
-                RunCommand("cd temp\\nx-hbmenu && make nx -j2");
+                RunCommand("cd temp\\nx-hbmenu && make nx -j");
 
                 // copy file
                 File.Copy("temp\\nx-hbmenu\\nx-hbmenu.nro", "SD Root\\hbmenu.nro");
@@ -225,7 +225,7 @@ namespace LaunchpadNX
                 RunCommand("git clone https://github.com/Adubbz/Tinfoil.git temp\\Tinfoil");
 
                 // build it
-                RunCommand("cd temp\\Tinfoil && make -j2");
+                RunCommand("cd temp\\Tinfoil && make -j");
 
                 // create needed directories
                 Directory.CreateDirectory("SD Root\\switch");
@@ -247,7 +247,7 @@ namespace LaunchpadNX
                 RunCommand("git clone https://github.com/BernardoGiordano/Checkpoint.git temp\\Checkpoint");
 
                 // build it
-                RunCommand("cd temp\\Checkpoint\\switch && make -j2");
+                RunCommand("cd temp\\Checkpoint\\switch && make -j");
 
                 // create needed directory
                 if (!Directory.Exists("SD Root\\switch"))

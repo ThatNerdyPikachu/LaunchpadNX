@@ -237,6 +237,28 @@ namespace LaunchpadNX
                 File.Copy("temp\\Tinfoil\\Tinfoil.nro", "SD Root\\switch\\Tinfoil.nro");
             }
 
+            // checkpoint!
+            if (tinfoilCheckbox.Enabled)
+            {
+                // install freetype (shouldn't be needed due to hbmenu, but hey, you never know!)
+                RunCommand("pacman -S switch-freetype --noconfirm --needed");
+
+                // clone it
+                RunCommand("git clone https://github.com/BernardoGiordano/Checkpoint.git temp\\Checkpoint");
+
+                // build it
+                RunCommand("cd temp\\Checkpoint\\switch && make -j4");
+
+                // create needed directory
+                if (!Directory.Exists("SD Root\\switch"))
+                {
+                    Directory.CreateDirectory("SD Root\\switch");
+                }
+
+                // copy file
+                File.Copy("temp\\Checkpoint\\switch\\Checkpoint.nro", "SD Root\\switch\\Checkpoint.nro");
+            }
+
             // hekate config (THANKS C#!!)
             System.IO.File.WriteAllLines("SD Root\\hekate_ipl.ini", hekateConfig);
 

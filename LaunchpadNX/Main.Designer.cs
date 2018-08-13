@@ -35,6 +35,7 @@
             this.sigpatchesCheckbox = new System.Windows.Forms.CheckBox();
             this.tinfoilCheckbox = new System.Windows.Forms.CheckBox();
             this.startButton = new System.Windows.Forms.Button();
+            this.checkpointCheckbox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // atmsCheckbox
@@ -116,11 +117,22 @@
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
+            // checkpointCheckbox
+            // 
+            this.checkpointCheckbox.AutoSize = true;
+            this.checkpointCheckbox.Location = new System.Drawing.Point(210, 35);
+            this.checkpointCheckbox.Name = "checkpointCheckbox";
+            this.checkpointCheckbox.Size = new System.Drawing.Size(80, 17);
+            this.checkpointCheckbox.TabIndex = 8;
+            this.checkpointCheckbox.Text = "Checkpoint";
+            this.checkpointCheckbox.UseVisualStyleBackColor = true;
+            // 
             // LaunchpadNX
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(386, 89);
+            this.Controls.Add(this.checkpointCheckbox);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.tinfoilCheckbox);
             this.Controls.Add(this.sigpatchesCheckbox);
@@ -144,6 +156,7 @@
         private System.Windows.Forms.CheckBox sigpatchesCheckbox;
         private System.Windows.Forms.CheckBox tinfoilCheckbox;
         private System.Windows.Forms.Button startButton;
+        private System.Windows.Forms.CheckBox checkpointCheckbox;
     }
 }
 

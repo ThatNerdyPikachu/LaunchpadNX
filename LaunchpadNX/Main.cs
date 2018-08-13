@@ -204,7 +204,7 @@ namespace LaunchpadNX
             }
 
             // sigpatches!
-            if (sigpatchesCheckbox.Enabled)
+            if (sigpatchesCheckbox.Checked)
             {
                 // create needed directory
                 Directory.CreateDirectory("SD Root\\atmosphere\\exefs_patches");
@@ -216,7 +216,7 @@ namespace LaunchpadNX
             }
 
             // tinfoil!
-            if (tinfoilCheckbox.Enabled)
+            if (tinfoilCheckbox.Checked)
             {
                 // install curl
                 RunCommand("pacman -S switch-curl --noconfirm --needed");
@@ -238,7 +238,7 @@ namespace LaunchpadNX
             }
 
             // checkpoint!
-            if (checkpointCheckbox.Enabled)
+            if (checkpointCheckbox.Checked)
             {
                 // install freetype (shouldn't be needed due to hbmenu, but hey, you never know!)
                 RunCommand("pacman -S switch-freetype --noconfirm --needed");

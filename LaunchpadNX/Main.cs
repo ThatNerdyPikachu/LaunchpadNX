@@ -296,13 +296,14 @@ namespace LaunchpadNX
                 RunCommand("cd temp\\appstorenx && make -j");
 
                 // create needed directory
-                if (!Directory.Exists("SD Root\\switch"))
+                if (!Directory.Exists("SD Root\\switch\\appstore"))
                 {
-                    Directory.CreateDirectory("SD Root\\switch");
+                    Directory.CreateDirectory("SD Root\\switch\\appstore");
                 }
 
-                // copy file
-                File.Copy("temp\\appstorenx\\appstore.nro", "SD Root\\switch\\appstore.nro");
+                // copy files
+                File.Copy("temp\\appstorenx\\appstore.nro", "SD Root\\switch\\appstore\\appstore.nro");
+                CopyDirectory("temp\\appstorenx\\res", "SD Root\\switch\\appstore\\res", false);
             }
 
             // switchident

@@ -257,13 +257,13 @@ namespace LaunchpadNX
                 RunCommand("cd temp\\Checkpoint\\switch && make -j");
 
                 // create needed directory
-                if (!Directory.Exists("SD Root\\switch"))
+                if (!Directory.Exists("SD Root\\switch\\Checkpoint"))
                 {
-                    Directory.CreateDirectory("SD Root\\switch");
+                    Directory.CreateDirectory("SD Root\\switch\\Checkpoint");
                 }
 
                 // copy file
-                File.Copy("temp\\Checkpoint\\switch\\out\\Checkpoint.nro", "SD Root\\switch\\Checkpoint.nro");
+                File.Copy("temp\\Checkpoint\\switch\\out\\Checkpoint.nro", "SD Root\\switch\\Checkpoint\\Checkpoint.nro");
             }
 
             // sys-ftpd!

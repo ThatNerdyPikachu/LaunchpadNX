@@ -127,7 +127,7 @@ namespace LaunchpadNX
             // install switch dev tools
             RunCommand("pacman -S switch-dev devkitARM --noconfirm --needed");
             
-            // Hekate
+            // Hekate (TODO: add no bootlogo patches for users who want them)
             RunCommand("git clone https://github.com/CTCaer/hekate.git temp\\hekate && cd temp\\hekate && make -j");
             File.Copy("temp\\hekate\\ipl.bin", "CFW.bin", true);
 
@@ -136,8 +136,22 @@ namespace LaunchpadNX
             // clone it
             RunCommand("git clone https://github.com/Atmosphere-NX/Atmosphere.git temp\\Atmosphere");
 
-            // apply patch
+            // apply patch(es)
             RunCommand("cd temp\\Atmosphere && git apply ../../files/stub-out-exosphere-api-checks.patch");
+
+            if (hbmenuCheckbox.Checked)
+            {
+                if (hbmenuTitleSelect.Text == "Album")
+                {
+                    RunCommand("cd temp\\Atmosphere && git apply ../../files/hbl-album.patch");
+                } else if (hbmenuTitleSelect.Text == "Controllers Screen")
+                {
+                    RunCommand("cd temp\\Atmosphere && git apply ../../files/hbl-controllers.patch");
+                } else
+                {
+                    RunCommand("cd temp\\Atmosphere && git apply ../../files/hbl-album.patch");
+                }
+            }
 
             // build it
             RunCommand("cd temp\\Atmosphere\\stratosphere && make -j");
@@ -172,15 +186,15 @@ namespace LaunchpadNX
                 string tid = "010000000000100D";
                 if (hbmenuTitleSelect.Text == "Album")
                 {
-                    File.Copy("files\\album.json", "temp\\nx-hbloader\\hbl.json", true);
+                    File.Copy("files\\hbl-album.json", "temp\\nx-hbloader\\hbl.json", true);
                     tid = "010000000000100D";
                 } else if (hbmenuTitleSelect.Text == "Controllers Screen")
                 {
-                    File.Copy("files\\controllers.json", "temp\\nx-hbloader\\hbl.json", true);
+                    File.Copy("files\\hbl-controllers.json", "temp\\nx-hbloader\\hbl.json", true);
                     tid = "0100000000001003";
                 } else
                 {
-                    File.Copy("files\\album.json", "temp\\nx-hbloader\\hbl.json", true);
+                    File.Copy("files\\hbl-album.json", "temp\\nx-hbloader\\hbl.json", true);
                 }
 
                 // build it

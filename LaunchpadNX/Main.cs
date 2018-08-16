@@ -127,8 +127,22 @@ namespace LaunchpadNX
             // install switch dev tools
             RunCommand("pacman -S switch-dev devkitARM --noconfirm --needed");
             
-            // Hekate (TODO: add no bootlogo patches for users who want them)
-            RunCommand("git clone https://github.com/CTCaer/hekate.git temp\\hekate && cd temp\\hekate && make -j");
+            // Hekate
+            //
+            // clone it
+            RunCommand("git clone https://github.com/CTCaer/hekate.git temp\\hekate");
+
+            // apply patch
+            if (noBootlogoCheckbox.Checked)
+            {
+                RunCommand("cd temp\\hekate && git apply ../../files/no-bootlogo.patch");
+            }
+
+            // build it
+            RunCommand("cd temp\\hekate && make -j");
+
+            // copy file
+
             File.Copy("temp\\hekate\\ipl.bin", "CFW.bin", true);
 
             // Atmosphere base (always ran)
@@ -346,8 +360,14 @@ namespace LaunchpadNX
             // cleanup
             RunCommand("rmdir /S /Q temp");
 
+            string done = "Done! Copy the contents of the \"SD Root\" folder to your SD Card, then launch the CFW.bin payload using your favorite method!";
+            if (hbmenuCheckbox.Checked)
+            {
+                done = done + " (Since you selected hbmenu, you can load it by holding R while launching the " + hbmenuTitleSelect.Text + " from the HOME menu)";
+            }
+
             // we are done!
-            MessageBox.Show("Done! Copy the contents of the \"SD Root\" folder to your SD Card, then launch the CFW.bin payload using your favorite method!", 
+            MessageBox.Show(done, 
                 "LaunchpadNX", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }

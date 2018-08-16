@@ -39,6 +39,7 @@
             this.ftpdCheckbox = new System.Windows.Forms.CheckBox();
             this.hbasCheckbox = new System.Windows.Forms.CheckBox();
             this.switchidentCheckbox = new System.Windows.Forms.CheckBox();
+            this.noBootlogoCheckbox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // atmsCheckbox
@@ -112,7 +113,7 @@
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(10, 88);
+            this.startButton.Location = new System.Drawing.Point(12, 114);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(364, 23);
             this.startButton.TabIndex = 7;
@@ -163,11 +164,22 @@
             this.switchidentCheckbox.Text = "SwitchIdent";
             this.switchidentCheckbox.UseVisualStyleBackColor = true;
             // 
+            // noBootlogoCheckbox
+            // 
+            this.noBootlogoCheckbox.AutoSize = true;
+            this.noBootlogoCheckbox.Location = new System.Drawing.Point(12, 81);
+            this.noBootlogoCheckbox.Name = "noBootlogoCheckbox";
+            this.noBootlogoCheckbox.Size = new System.Drawing.Size(122, 17);
+            this.noBootlogoCheckbox.TabIndex = 12;
+            this.noBootlogoCheckbox.Text = "No Hekate bootlogo";
+            this.noBootlogoCheckbox.UseVisualStyleBackColor = true;
+            // 
             // LaunchpadNX
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(386, 123);
+            this.ClientSize = new System.Drawing.Size(386, 149);
+            this.Controls.Add(this.noBootlogoCheckbox);
             this.Controls.Add(this.switchidentCheckbox);
             this.Controls.Add(this.hbasCheckbox);
             this.Controls.Add(this.ftpdCheckbox);
@@ -199,6 +211,7 @@
         private System.Windows.Forms.CheckBox ftpdCheckbox;
         private System.Windows.Forms.CheckBox hbasCheckbox;
         private System.Windows.Forms.CheckBox switchidentCheckbox;
+        private System.Windows.Forms.CheckBox noBootlogoCheckbox;
     }
 }
 

@@ -131,15 +131,7 @@ namespace LaunchpadNX
             // Hekate
             //
             // clone it
-            RunCommand("git clone https://github.com/CTCaer/hekate.git temp\\hekate");
-
-            // apply patch
-            if (noBootlogoCheckbox.Checked)
-            {
-                RunCommand("cd temp\\hekate && git apply ../../files/no-bootlogo.patch");
-            }
-
-            // build it
+            RunCommand("git clone https://github.com/CTCaer/hekate.git temp\\hekate");            // build it
             RunCommand("cd temp\\hekate && make -j");
 
             // copy file
@@ -302,7 +294,7 @@ namespace LaunchpadNX
                 RunCommand("git clone https://github.com/jakibaki/sys-ftpd.git temp\\sys-ftpd");
 
                 // build it
-                RunCommand("cd temp\\sys-ftpd && make");
+                RunCommand("cd temp\\sys-ftpd && make -j");
 
                 // copy files
                 File.Copy("temp\\sys-ftpd\\sys-ftpd.kip", "SD Root\\cfw\\sys-ftpd.kip");
@@ -365,7 +357,7 @@ namespace LaunchpadNX
             string done = "Done! Copy the contents of the \"SD Root\" folder to your SD Card, then launch the CFW.bin payload using your favorite method!";
             if (hbmenuCheckbox.Checked)
             {
-                done = done + " (Since you selected hbmenu, you can load it by holding R while launching the " + hbmenuTitleSelect.Text + " from the HOME menu)";
+                done = done + " (Since you selected hbmenu, you can load it by holding R while launching the " + hbmenuTitleSelect.Text + " from the HOME Menu)";
             }
 
             // we are done!

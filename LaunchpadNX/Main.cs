@@ -143,7 +143,6 @@ namespace LaunchpadNX
             RunCommand("cd temp\\hekate && make -j");
 
             // copy file
-
             File.Copy("temp\\hekate\\ipl.bin", "CFW.bin", true);
 
             // Atmosphere base (always ran)
@@ -296,14 +295,18 @@ namespace LaunchpadNX
             // sys-ftpd!
             if (ftpdCheckbox.Checked)
             {
+                // install mpg123
+                RunCommand("pacman -S switch-mpg123 --noconfirm --needed");
+
                 // clone it
                 RunCommand("git clone https://github.com/jakibaki/sys-ftpd.git temp\\sys-ftpd");
 
                 // build it
                 RunCommand("cd temp\\sys-ftpd && make");
 
-                // copy file
+                // copy files
                 File.Copy("temp\\sys-ftpd\\sys-ftpd.kip", "SD Root\\cfw\\sys-ftpd.kip");
+                CopyDirectory("temp\\sys-ftpd\\sd_card", "SD Root", true);
 
                 hekateConfig.Add("kip1=cfw/sys-ftpd.kip");
             }

@@ -361,7 +361,7 @@ namespace LaunchpadNX
             }
 
             // hekate config (THANKS C#!!)
-            System.IO.File.WriteAllLines("SD Root\\hekate_ipl.ini", hekateConfig);
+            System.IO.File.WriteAllLines("SD Root\\bootloader\\ini\\hekate_ipl.ini", hekateConfig);
 
             // cleanup
             RunCommand("rmdir /S /Q temp");

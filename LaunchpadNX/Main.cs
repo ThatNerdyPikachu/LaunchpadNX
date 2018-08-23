@@ -134,7 +134,7 @@ namespace LaunchpadNX
             RunCommand("git clone https://github.com/CTCaer/hekate.git temp\\hekate");
             
             // remove sample module
-            RunCommand("rmdir /S /Q \"SD Root\\hekate\\modules\\simple_sample\"");
+            RunCommand("rmdir /S /Q temp\\hekate\\modules\\simple_sample");
             
             // build it
             RunCommand("cd temp\\hekate && make -j");

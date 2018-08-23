@@ -147,7 +147,7 @@ namespace LaunchpadNX
 
             // copy files
             File.Copy("temp\\hekate\\output\\hekate.bin", "CFW.bin", true);
-            File.Copy("temp\\hekate\\output\\libsys_lp0.bso", "SD Root\\bootloader\\libsys_lp0.bso");
+            File.Copy("temp\\hekate\\output\\libsys_lp0.bso", "SD Root\\bootloader\\sys\\libsys_lp0.bso");
 
             // Atmosphere base (always ran)
             //

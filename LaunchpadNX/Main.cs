@@ -131,11 +131,23 @@ namespace LaunchpadNX
             // Hekate
             //
             // clone it
-            RunCommand("git clone https://github.com/CTCaer/hekate.git temp\\hekate");            // build it
+            RunCommand("git clone https://github.com/CTCaer/hekate.git temp\\hekate");
+            
+            // remove sample module
+            RunCommand("rmdir /S /Q \"SD Root\\hekate\\modules\\simple_sample\"");
+            
+            // build it
             RunCommand("cd temp\\hekate && make -j");
 
-            // copy file
-            File.Copy("temp\\hekate\\ipl.bin", "CFW.bin", true);
+            // create needed directories
+            Directory.CreateDirectory("SD Root\\bootloader");
+            Directory.CreateDirectory("SD Root\\bootloader\\ini");
+            Directory.CreateDirectory("SD Root\\bootloader\\payloads");
+            Directory.CreateDirectory("SD Root\\bootloader\\sys");
+
+            // copy files
+            File.Copy("temp\\hekate\\output\\hekate.bin", "CFW.bin", true);
+            File.Copy("temp\\hekate\\output\\libsys_lp0.bso", "SD Root\\bootloader\\sys\\libsys_lp0.bso");
 
             // Atmosphere base (always ran)
             //

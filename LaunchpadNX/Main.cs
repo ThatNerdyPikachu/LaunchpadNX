@@ -141,8 +141,6 @@ namespace LaunchpadNX
 
             // create needed directories
             Directory.CreateDirectory("SD Root\\bootloader");
-            Directory.CreateDirectory("SD Root\\bootloader\\ini");
-            Directory.CreateDirectory("SD Root\\bootloader\\payloads");
             Directory.CreateDirectory("SD Root\\bootloader\\sys");
 
             // copy files

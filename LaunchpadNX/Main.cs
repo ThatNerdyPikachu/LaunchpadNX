@@ -262,11 +262,8 @@ namespace LaunchpadNX
                 // build it
                 RunCommand("cd temp\\Tinfoil && make -j");
 
-                // create needed directories
+                // create needed directory
                 Directory.CreateDirectory("SD Root\\switch");
-                Directory.CreateDirectory("SD Root\\tinfoil\\extracted");
-                Directory.CreateDirectory("SD Root\\tinfoil\\nsp");
-                Directory.CreateDirectory("SD Root\\tinfoil\\ticket");
 
                 // copy file
                 File.Copy("temp\\Tinfoil\\Tinfoil.nro", "SD Root\\switch\\Tinfoil.nro");

@@ -276,7 +276,7 @@ namespace LaunchpadNX
                 RunCommand("pacman -S switch-freetype --noconfirm --needed");
 
                 // clone it
-                RunCommand("git clone https://github.com/BernardoGiordano/Checkpoint.git temp\\Checkpoint");
+                RunCommand("git clone https://github.com/FlagBrew/Checkpoint.git temp\\Checkpoint");
 
                 // build it
                 RunCommand("cd temp\\Checkpoint\\switch && make -j");

@@ -1,0 +1,84 @@
+diff --git a/stratosphere/fs_mitm/source/fsmitm_main.cpp b/stratosphere/fs_mitm/source/fsmitm_main.cpp
+index 7e9658e..e6271b1 100644
+--- a/stratosphere/fs_mitm/source/fsmitm_main.cpp
++++ b/stratosphere/fs_mitm/source/fsmitm_main.cpp
+@@ -82,7 +82,6 @@ void __appInit(void) {
+         fatalSimple(0xCAFE << 4 | 3);
+     }
+     
+-#ifdef SYSMODULES_REQUIRE_EXOSPHERE    
+     /* Check for exosphere API compatibility. */
+     u64 exosphere_cfg;
+     if (R_SUCCEEDED(splGetConfig((SplConfigItem)65000, &exosphere_cfg))) {
+@@ -94,7 +93,6 @@ void __appInit(void) {
+     } else {
+         fatalSimple(0xCAFE << 4 | 0xFF);
+     }
+-#endif
+     
+     //splExit();
+ }
+diff --git a/stratosphere/loader/source/ldr_config.cpp b/stratosphere/loader/source/ldr_config.cpp
+index e0602f0..e1323b2 100644
+--- a/stratosphere/loader/source/ldr_config.cpp
++++ b/stratosphere/loader/source/ldr_config.cpp
+@@ -136,7 +136,7 @@ bool LoadConfigFromFile(FILE* filePtr, LoaderConfig& outConfig)
+ const LoaderConfig& LoaderConfig::tryLoadingFromFile()
+ {
+     if (!configLoadedFromFile)
+-        configLoadedFromFile = LoadConfigFromFile(fopen("sdmc:/rajnx_ipl.ini", "r"), *this);
++        configLoadedFromFile = LoadConfigFromFile(fopen("sdmc:/cfw/hbl.ini", "r"), *this);
+ 
+     return *this;
+ }
+diff --git a/stratosphere/loader/source/ldr_content_management.cpp b/stratosphere/loader/source/ldr_content_management.cpp
+index a6658f9..402f181 100644
+--- a/stratosphere/loader/source/ldr_content_management.cpp
++++ b/stratosphere/loader/source/ldr_content_management.cpp
+@@ -40,7 +40,7 @@ Result ContentManagement::MountCode(u64 tid, FsStorageId sid) {
+         const char* customNspPath = nullptr;
+         const auto& ldrConfig = g_ldrConfig.tryLoadingFromFile();        
+         if (tid == ldrConfig.wantedTitleId && ldrConfig.shouldRedirectBasedOnKeys())
+-            customNspPath = "@Sdcard:/RajNX/hbl.nsp";
++            customNspPath = "@Sdcard:/cfw/hbl.nsp";
+ 
+         if (R_SUCCEEDED(MountCodeNspOnSd(tid, customNspPath)))
+             return 0;
+diff --git a/stratosphere/loader/source/ldr_main.cpp b/stratosphere/loader/source/ldr_main.cpp
+index 4d3a9dc..89899f4 100644
+--- a/stratosphere/loader/source/ldr_main.cpp
++++ b/stratosphere/loader/source/ldr_main.cpp
+@@ -85,14 +85,12 @@ void __appInit(void) {
+         fatalSimple(0xCAFE << 4 | 3);
+     }
+ 
+-#ifdef SYSMODULES_REQUIRE_EXOSPHERE    
+     /* Check for exosphere API compatibility. */
+     u64 exosphere_cfg;
+     if (R_FAILED(splGetConfig((SplConfigItem)65000, &exosphere_cfg))) {
+         //fatalSimple(0xCAFE << 4 | 0xFF);
+         /* TODO: Does Loader need to know about target firmware/master key revision? If so, extract from exosphere_cfg. */
+     }
+-#endif
+     
+     //splExit();
+ }
+diff --git a/stratosphere/pm/source/pm_main.cpp b/stratosphere/pm/source/pm_main.cpp
+index 2643403..04200ba 100644
+--- a/stratosphere/pm/source/pm_main.cpp
++++ b/stratosphere/pm/source/pm_main.cpp
+@@ -94,14 +94,12 @@ void __appInit(void) {
+         fatalSimple(0xCAFE << 4 | 6);
+     }
+     
+-#ifdef SYSMODULES_REQUIRE_EXOSPHERE  
+     /* Check for exosphere API compatibility. */
+     u64 exosphere_cfg;
+     if (R_FAILED(splGetConfig((SplConfigItem)65000, &exosphere_cfg))) {
+         fatalSimple(0xCAFE << 4 | 0xFF);
+         /* TODO: Does PM need to know about target firmware/master key revision? If so, extract from exosphere_cfg. */
+     }
+-#endif
+ }
+ 
+ void __appExit(void) {

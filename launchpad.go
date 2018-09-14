@@ -91,7 +91,7 @@ func main() {
 
 	if runtime.GOOS == "windows" {
 		// check for reqs
-		dkpCmds := []string{"pacman", "make", "patch"}
+		dkpCmds := []string{"pacman", "make"}
 		for _, v := range dkpCmds {
 			_, err := exec.LookPath(v)
 			if err != nil {
@@ -104,7 +104,7 @@ func main() {
 		}
 	} else if runtime.GOOS == "linux" {
 		// check for reqs
-		dkpCmds := []string{"dkp-pacman", "make", "patch"}
+		dkpCmds := []string{"dkp-pacman", "make"}
 		for _, v := range dkpCmds {
 			_, err := exec.LookPath(v)
 			if err != nil {
@@ -309,17 +309,11 @@ func main() {
 			err = cmd.Run()
 			errCheck(w, "patching atmosphere", err)
 
-			fmt.Fprintf(w, "building exosphere...\n")
-			cmd = exec.Command("make", "-j3")
-			cmd.Dir = "build/atmosphere/exosphere"
-			err = cmd.Run()
-			errCheck(w, "building exosphere", err)
-
-			fmt.Fprintf(w, "building stratosphere...\n")
+			fmt.Fprintf(w, "building atmosphere...\n")
 			cmd = exec.Command("make", "-j3")
 			cmd.Dir = "build/atmosphere/stratosphere"
 			err = cmd.Run()
-			errCheck(w, "building stratosphere", err)
+			errCheck(w, "building atmosphere", err)
 		} else {
 			fmt.Fprintf(w, "cloning atmosphere...\n")
 
@@ -330,17 +324,11 @@ func main() {
 				errCheck(w, "cloning hbmenu", err)
 			}
 
-			fmt.Fprintf(w, "building exosphere...\n")
+			fmt.Fprintf(w, "building atmosphere...\n")
 			cmd = exec.Command("make", "-j3")
-			cmd.Dir = "build/atmosphere/exosphere"
+			cmd.Dir = "build/atmosphere/atmosphere"
 			err = cmd.Run()
-			errCheck(w, "building exosphere", err)
-
-			fmt.Fprintf(w, "building stratosphere...\n")
-			cmd = exec.Command("make", "-j3")
-			cmd.Dir = "build/atmosphere/stratosphere"
-			err = cmd.Run()
-			errCheck(w, "building stratosphere", err)
+			errCheck(w, "building atmosphere", err)
 		}
 	}
 
@@ -353,8 +341,6 @@ func main() {
 	errCheck(w, "copying creport's npdm", err)
 	err = os.MkdirAll("sd_root/cfw", os.ModeDir)
 	errCheck(w, "creating sd_root/cfw", err)
-	err = copy("build/atmosphere/exosphere/exosphere.bin", "sd_root/cfw/exosphere.bin")
-	errCheck(w, "copying exosphere", err)
 	err = copy("build/atmosphere/stratosphere/loader/loader.kip", "sd_root/cfw/loader.kip")
 	errCheck(w, "copying loader", err)
 	err = copy("build/atmosphere/stratosphere/pm/pm.kip", "sd_root/cfw/pm.kip")
@@ -376,7 +362,7 @@ func main() {
 			"",
 			"[CFW]",
 		}
-		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nogc,nosigchk", "secmon=cfw/exosphere.bin"}
+		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nogc,nosigchk"}
 	} else if nogc {
 		hekateConfig = []string{
 			"[Stock]",
@@ -386,21 +372,21 @@ func main() {
 			"",
 			"[CFW]",
 		}
-		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nogc", "secmon=cfw/exosphere.bin"}
+		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nogc"}
 	} else if inArray(features, "4") {
 		hekateConfig = []string{
 			"[Stock]",
 			"",
 			"[CFW]",
 		}
-		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nosigchk", "secmon=cfw/exosphere.bin"}
+		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nosigchk"}
 	} else {
 		hekateConfig = []string{
 			"[Stock]",
 			"",
 			"[CFW]",
 		}
-		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "secmon=cfw/exosphere.bin"}
+		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip"}
 	}
 
 	if inArray(features, "1") {

@@ -107,9 +107,9 @@ func main() {
 		}
 	} else if runtime.GOOS == "linux" {
 		// check for reqs
-		osr, err = osrelease.Read()
+		osr, err := osrelease.Read()
 		var dkpCmds []string
-		if err == nil && or["NAME"] == "Arch Linux" {
+		if err == nil && osr["NAME"] == "Arch Linux" {
 			dkpCmds = []string{"pacman", "make", "git"}
 		} else {
 			dkpCmds = []string{"dkp-pacman", "make"}

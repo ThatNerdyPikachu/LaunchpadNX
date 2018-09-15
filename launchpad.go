@@ -252,35 +252,46 @@ func main() {
 	errCheck(w, "running pacman -Syu", err)
 
 	fmt.Fprintf(w, "installing dependencies...\n")
-	deps := []string{"switch-dev", "devkitARM"}
+
+	var args []string
+
+	if runtime.GOOS == "windows" {
+		args = []string{"-S", "--noconfirm", "--needed", "switch-dev", "devkitARM"}
+	} else if runtime.GOOS == "linux" {
+		if osr["NAME"] == "Arch Linux" {
+			args = []string{"pacman", "-S", "--noconfirm", "--needed", "switch-dev", "devkitARM"}
+		} else {
+			args = []string{"dkp-pacman", "-S", "--noconfirm", "--needed", "switch-dev", "devkitARM"}
+		}
+	}
 
 	if inArray(features, "1") {
-		deps = append(deps, "switch-freetype")
+		args = append(args, "switch-freetype")
 	}
 
 	if inArray(features, "2") {
-		deps = append(deps, "switch-freetype", "switch-libconfig")
+		args = append(args, "switch-freetype", "switch-libconfig")
 	}
 
 	if inArray(features, "5") {
-		deps = append(deps, "switch-mpg123")
+		args = append(args, "switch-mpg123")
 	}
 
 	if inArray(features, "6") {
-		deps = append(deps, "switch-curl")
+		args = append(args, "switch-curl")
 	}
 
 	if runtime.GOOS == "windows" {
-		cmd := exec.Command("pacman", "-S", strings.Join(deps, " "), "--noconfirm", "--needed")
+		cmd := exec.Command("pacman", args...)
 		err = cmd.Run()
 		errCheck(w, "installing dependencies", err)
 	} else if runtime.GOOS == "linux" {
 		if osr["NAME"] == "Arch Linux" {
-			cmd := exec.Command("sudo", "pacman", "-S", strings.Join(deps, " "), "--noconfirm", "--needed")
+			cmd := exec.Command("sudo", args...)
 			err = cmd.Run()
 			errCheck(w, "installing dependencies", err)
 		} else {
-			cmd := exec.Command("sudo", "dkp-pacman", "-S", strings.Join(deps, " "), "--noconfirm", "--needed")
+			cmd := exec.Command("sudo", args...)
 			err = cmd.Run()
 			errCheck(w, "installing dependencies", err)
 		}

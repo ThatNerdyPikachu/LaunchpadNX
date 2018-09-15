@@ -248,7 +248,15 @@ func main() {
 	}
 
 	fmt.Fprintf(w, "running pacman -Syu...\n")
-	err = exec.Command("pacman", "-Syu", "--noconfirm").Run()
+	if runtime.GOOS == "windows" {
+		err = exec.Command("pacman", "-Syu", "--noconfirm").Run()
+	} else if runtime.GOOS == "linux" {
+		if osr["NAME"] == "Arch Linux" {
+			err = exec.Command("sudo", "pacman", "-Syu", "--noconfirm").Run()
+		} else {
+			err = exec.Command("sudo", "dkp-pacman", "-Syu", "--noconfirm").Run()
+		}
+	}
 	errCheck(w, "running pacman -Syu", err)
 
 	fmt.Fprintf(w, "installing dependencies...\n")

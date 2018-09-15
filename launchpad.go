@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/cobaugh/osrelease"
 	"github.com/shiena/ansicolor"
 	"gopkg.in/src-d/go-git.v4"
 	"io"
@@ -89,9 +90,11 @@ func main() {
 	resetTerm(w)
 	defer resetTerm(w)
 
+	var or map[string]string
+
 	if runtime.GOOS == "windows" {
 		// check for reqs
-		dkpCmds := []string{"pacman", "make"}
+		dkpCmds := []string{"pacman", "make", "git"}
 		for _, v := range dkpCmds {
 			_, err := exec.LookPath(v)
 			if err != nil {
@@ -104,7 +107,13 @@ func main() {
 		}
 	} else if runtime.GOOS == "linux" {
 		// check for reqs
-		dkpCmds := []string{"dkp-pacman", "make"}
+		or, _ = osrelease.Read()
+		var dkpCmds []string
+		if or["NAME"] == "Arch Linux" {
+			dkpCmds = []string{"pacman", "make", "git"}
+		} else {
+			dkpCmds = []string{"dkp-pacman", "make"}
+		}
 		for _, v := range dkpCmds {
 			_, err := exec.LookPath(v)
 			if err != nil {
@@ -242,11 +251,42 @@ func main() {
 	err = exec.Command("pacman", "-Syu", "--noconfirm").Run()
 	errCheck(w, "running pacman -Syu", err)
 
-	// the goddess that blessed your switch -- <3
-	fmt.Fprintf(w, "installing hekate's dependencies...\n")
-	err = exec.Command("pacman", "-S", "switch-dev", "devkitARM", "--noconfirm", "--needed").Run()
-	errCheck(w, "installing hekate's dependencies", err)
+	fmt.Fprintf(w, "installing dependencies...\n")
+	deps := []string{"switch-dev", "devkitARM"}
 
+	if inArray(features, "1") {
+		deps = append(deps, "switch-freetype")
+	}
+
+	if inArray(features, "2") {
+		deps = append(deps, "switch-freetype", "switch-libconfig")
+	}
+
+	if inArray(features, "5") {
+		deps = append(deps, "switch-mpg123")
+	}
+
+	if inArray(features, "6") {
+		deps = append(deps, "switch-curl")
+	}
+
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("pacman", "-S", strings.Join(deps, " "), "--noconfirm", "--needed")
+		err = cmd.Run()
+		errCheck(w, "installing dependencies", err)
+	} else if runtime.GOOS == "linux" {
+		if osr["NAME"] == "Arch Linux" {
+			cmd := exec.Command("sudo", "pacman", "-S", strings.Join(deps, " "), "--noconfirm", "--needed")
+			err = cmd.Run()
+			errCheck(w, "installing dependencies", err)
+		} else {
+			cmd := exec.Command("sudo", "dkp-pacman", "-S", strings.Join(deps, " "), "--noconfirm", "--needed")
+			err = cmd.Run()
+			errCheck(w, "installing dependencies", err)
+		}
+	}
+
+	// the goddess that blessed your switch -- <3
 	fmt.Fprintf(w, "cloning hekate...\n")
 	_, err = git.PlainClone("build/hekate", false, &git.CloneOptions{
 		URL: "https://github.com/CTCaer/hekate.git",
@@ -268,11 +308,6 @@ func main() {
 	errCheck(w, "creating sd_root/bootloader/sys", err)
 	err = copy("build/hekate/output/libsys_lp0.bso", "sd_root/bootloader/sys/libsys_lp0.bso")
 	errCheck(w, "copying the hekate payload", err)
-
-	// let's jump into the atmosphere~
-	fmt.Fprintf(w, "installing atmosphere's dependencies...\n")
-	err = exec.Command("pacman", "-S", "switch-dev", "devkitARM", "--noconfirm", "--needed").Run()
-	errCheck(w, "installing atmosphere's dependencies", err)
 
 	if ap == false {
 		if inArray(features, "2") || inArray(features, "1") || inArray(features, "6") {
@@ -390,10 +425,6 @@ func main() {
 	}
 
 	if inArray(features, "1") {
-		fmt.Fprintf(w, "installing checkpoint's dependencies...\n")
-		err = exec.Command("pacman", "-S", "switch-dev", "devkitARM", "switch-freetype", "--noconfirm", "--needed").Run()
-		errCheck(w, "installing checkpoint's dependencies", err)
-
 		fmt.Fprintf(w, "cloning checkpoint...\n")
 		_, err = git.PlainClone("build/checkpoint", false, &git.CloneOptions{
 			URL: "https://github.com/FlagBrew/Checkpoint.git",
@@ -416,11 +447,8 @@ func main() {
 		err = copy("build/checkpoint/switch/out/Checkpoint.nro", "sd_root/switch/Checkpoint/Checkpoint.nro")
 		errCheck(w, "copying checkpoint", err)
 	}
-	if inArray(features, "2") || inArray(features, "1") || inArray(features, "6") {
-		fmt.Fprintf(w, "installing hbloader's dependencies...\n")
-		err = exec.Command("pacman", "-S", "switch-dev", "devkitARM", "--noconfirm", "--needed").Run()
-		errCheck(w, "installing hbloader's dependencies", err)
 
+	if inArray(features, "2") || inArray(features, "1") || inArray(features, "6") {
 		fmt.Fprintf(w, "cloning hbloader...\n")
 		_, err = git.PlainClone("build/hbloader", false, &git.CloneOptions{
 			URL: "https://github.com/switchbrew/nx-hbloader.git",
@@ -475,12 +503,14 @@ func main() {
 		err = copy("build/hbmenu/hbmenu.nro", "sd_root/hbmenu.nro")
 		errCheck(w, "copying hbmenu", err)
 	}
+
 	if inArray(features, "3") {
 		fmt.Fprintf(w, "copying files...\n")
 		err = copy("build/atmosphere/stratosphere/fs_mitm/fs_mitm.kip", "sd_root/cfw/fs_mitm.kip")
 		errCheck(w, "copying fs_mitm (layeredfs)", err)
 		c = append(c, "atmosphere=1", "kip1=cfw/fs_mitm.kip")
 	}
+
 	if inArray(features, "4") {
 		err = os.MkdirAll("sd_root/atmosphere/exefs_patches", os.ModeDir)
 		errCheck(w, "creating sd_root/atmosphere/exefs_patches", err)
@@ -488,11 +518,8 @@ func main() {
 		err = copyFolder("fake_tickets", "sd_root/atmosphere/exefs_patches/fake_tickets")
 		errCheck(w, "copying fake_tickets (sigpatches)", err)
 	}
-	if inArray(features, "5") {
-		fmt.Fprintf(w, "installing sys-ftpd's dependencies...\n")
-		err = exec.Command("pacman", "-S", "switch-dev", "devkitARM", "switch-mpg123", "--noconfirm", "--needed").Run()
-		errCheck(w, "installing sys-ftpd's dependencies", err)
 
+	if inArray(features, "5") {
 		fmt.Fprintf(w, "cloning sys-ftpd...\n")
 		_, err = git.PlainClone("build/sys-ftpd", false, &git.CloneOptions{
 			URL: "https://github.com/jakibaki/sys-ftpd.git",
@@ -514,11 +541,8 @@ func main() {
 		errCheck(w, "copying sys-ftpd", err)
 		c = append(c, "kip1=cfw/sys-ftpd.kip")
 	}
-	if inArray(features, "6") {
-		fmt.Fprintf(w, "installing tinfoil's dependencies...\n")
-		err = exec.Command("pacman", "-S", "switch-dev", "devkitARM", "switch-curl", "--noconfirm", "--needed").Run()
-		errCheck(w, "installing tinfoil's dependencies", err)
 
+	if inArray(features, "6") {
 		fmt.Fprintf(w, "cloning tinfoil...\n")
 		_, err = git.PlainClone("build/tinfoil", false, &git.CloneOptions{
 			URL: "https://github.com/Adubbz/Tinfoil.git",

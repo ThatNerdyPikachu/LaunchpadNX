@@ -411,7 +411,9 @@ func main() {
 		fmt.Fprintf(w, "copying files...\n")
 		err = os.MkdirAll("sd_root/switch", os.ModeDir)
 		errCheck(w, "creating sd_root/switch", err)
-		err = copy("build/checkpoint/switch/out/Checkpoint.nro", "sd_root/switch/Checkpoint.nro")
+		err = os.MkdirAll("sd_root/switch/Checkpoint", os.ModeDir)
+		errCheck(w, "creating sd_root/switch/Checkpoint", err)
+		err = copy("build/checkpoint/switch/out/Checkpoint.nro", "sd_root/switch/Checkpoint/Checkpoint.nro")
 		errCheck(w, "copying checkpoint", err)
 	}
 	if inArray(features, "2") || inArray(features, "1") || inArray(features, "6") {

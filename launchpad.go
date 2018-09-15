@@ -90,7 +90,7 @@ func main() {
 	resetTerm(w)
 	defer resetTerm(w)
 
-	var or map[string]string
+	var osr map[string]string
 
 	if runtime.GOOS == "windows" {
 		// check for reqs
@@ -107,9 +107,9 @@ func main() {
 		}
 	} else if runtime.GOOS == "linux" {
 		// check for reqs
-		or, _ = osrelease.Read()
+		osr, err = osrelease.Read()
 		var dkpCmds []string
-		if or["NAME"] == "Arch Linux" {
+		if err == nil && or["NAME"] == "Arch Linux" {
 			dkpCmds = []string{"pacman", "make", "git"}
 		} else {
 			dkpCmds = []string{"dkp-pacman", "make"}

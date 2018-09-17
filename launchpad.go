@@ -293,7 +293,8 @@ func main() {
 		err = cmd.Run()
 		errCheck(w, "installing dependencies", err)
 	} else if runtime.GOOS == "linux" {
-		if osr["NAME"] == "Arch Linux" {
+		_, err = exec.LookPath("pacman")
+		if err == nil {
 			cmd := exec.Command("sudo", args...)
 			err = cmd.Run()
 			errCheck(w, "installing dependencies", err)

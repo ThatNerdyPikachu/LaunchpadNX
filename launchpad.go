@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/cobaugh/osrelease"
 	"github.com/shiena/ansicolor"
 	"gopkg.in/src-d/go-git.v4"
 	"io"
@@ -90,8 +89,6 @@ func main() {
 	resetTerm(w)
 	defer resetTerm(w)
 
-	var osr map[string]string
-
 	if runtime.GOOS == "windows" {
 		// check for reqs
 		dkpCmds := []string{"pacman", "make", "git"}
@@ -107,9 +104,9 @@ func main() {
 		}
 	} else if runtime.GOOS == "linux" {
 		// check for reqs
-		osr, err := osrelease.Read()
 		var dkpCmds []string
-		if err == nil && osr["NAME"] == "Arch Linux" {
+		_, err := exec.LookPath("pacman")
+		if err == nil {
 			dkpCmds = []string{"pacman", "make", "git"}
 		} else {
 			dkpCmds = []string{"dkp-pacman", "make"}
@@ -240,7 +237,7 @@ func main() {
 				errCheck(w, "opening the worktree for "+f, err)
 
 				err = wt.Pull(&git.PullOptions{RemoteName: "origin"})
-				if err.Error() != "already up-to-date" {
+				if err != nil && err.Error() != "already up-to-date" {
 					errCheck(w, "updating the sources for "+f, err)
 				}
 			}
@@ -251,7 +248,8 @@ func main() {
 	if runtime.GOOS == "windows" {
 		err = exec.Command("pacman", "-Syu", "--noconfirm").Run()
 	} else if runtime.GOOS == "linux" {
-		if osr["NAME"] == "Arch Linux" {
+		_, err = exec.LookPath("pacman")
+		if err == nil {
 			err = exec.Command("sudo", "pacman", "-Syu", "--noconfirm").Run()
 		} else {
 			err = exec.Command("sudo", "dkp-pacman", "-Syu", "--noconfirm").Run()
@@ -266,7 +264,8 @@ func main() {
 	if runtime.GOOS == "windows" {
 		args = []string{"-S", "--noconfirm", "--needed", "switch-dev", "devkitARM"}
 	} else if runtime.GOOS == "linux" {
-		if osr["NAME"] == "Arch Linux" {
+		_, err = exec.LookPath("pacman")
+		if err == nil {
 			args = []string{"pacman", "-S", "--noconfirm", "--needed", "switch-dev", "devkitARM"}
 		} else {
 			args = []string{"dkp-pacman", "-S", "--noconfirm", "--needed", "switch-dev", "devkitARM"}

@@ -500,10 +500,6 @@ func main() {
 
 		f.Close()
 
-		fmt.Fprintf(w, "installing hbmenu's dependencies...\n")
-		err = exec.Command("pacman", "-S", "switch-dev", "devkitARM", "switch-freetype", "switch-libconfig", "--noconfirm", "--needed").Run()
-		errCheck(w, "installing hbmenu's dependencies", err)
-
 		fmt.Fprintf(w, "cloning hbmenu...\n")
 		_, err = git.PlainClone("build/hbmenu", false, &git.CloneOptions{
 			URL: "https://github.com/switchbrew/nx-hbmenu.git",

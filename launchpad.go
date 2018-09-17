@@ -74,7 +74,7 @@ func copyFolder(src, dst string) error {
 		return err
 	}
 
-	err = os.MkdirAll(dst, os.ModeDir)
+	err = os.MkdirAll(dst, 0700)
 
 	for _, f := range files {
 		copy(src+"/"+f.Name(), dst+"/"+f.Name())
@@ -323,7 +323,7 @@ func main() {
 	fmt.Fprintf(w, "copying files...\n")
 	err = copy("build/hekate/output/hekate.bin", "hekate.bin")
 	errCheck(w, "copying the hekate payload", err)
-	err = os.MkdirAll("sd_root/bootloader/sys", os.ModeDir)
+	err = os.MkdirAll("sd_root/bootloader/sys", 0700)
 	errCheck(w, "creating sd_root/bootloader/sys", err)
 	err = copy("build/hekate/output/libsys_lp0.bso", "sd_root/bootloader/sys/libsys_lp0.bso")
 	errCheck(w, "copying the hekate payload", err)
@@ -387,13 +387,13 @@ func main() {
 	}
 
 	fmt.Fprintf(w, "copying files...\n")
-	err = os.MkdirAll("sd_root/atmosphere/titles/0100000000000036/exefs", os.ModeDir)
+	err = os.MkdirAll("sd_root/atmosphere/titles/0100000000000036/exefs", 0700)
 	errCheck(w, "creating sd_root/atmosphere/titles/0100000000000036/exefs", err)
 	err = copy("build/atmosphere/stratosphere/creport/creport.npdm", "sd_root/atmosphere/titles/0100000000000036/exefs/main.npdm")
 	errCheck(w, "copying creport's npdm", err)
 	err = copy("build/atmosphere/stratosphere/creport/creport.nso", "sd_root/atmosphere/titles/0100000000000036/exefs/main")
 	errCheck(w, "copying creport's npdm", err)
-	err = os.MkdirAll("sd_root/cfw", os.ModeDir)
+	err = os.MkdirAll("sd_root/cfw", 0700)
 	errCheck(w, "creating sd_root/cfw", err)
 	err = copy("build/atmosphere/stratosphere/loader/loader.kip", "sd_root/cfw/loader.kip")
 	errCheck(w, "copying loader", err)
@@ -459,9 +459,9 @@ func main() {
 		errCheck(w, "building checkpoint", err)
 
 		fmt.Fprintf(w, "copying files...\n")
-		err = os.MkdirAll("sd_root/switch", os.ModeDir)
+		err = os.MkdirAll("sd_root/switch", 0700)
 		errCheck(w, "creating sd_root/switch", err)
-		err = os.MkdirAll("sd_root/switch/Checkpoint", os.ModeDir)
+		err = os.MkdirAll("sd_root/switch/Checkpoint", 0700)
 		errCheck(w, "creating sd_root/switch/Checkpoint", err)
 		err = copy("build/checkpoint/switch/out/Checkpoint.nro", "sd_root/switch/Checkpoint/Checkpoint.nro")
 		errCheck(w, "copying checkpoint", err)
@@ -531,7 +531,7 @@ func main() {
 	}
 
 	if inArray(features, "4") {
-		err = os.MkdirAll("sd_root/atmosphere/exefs_patches", os.ModeDir)
+		err = os.MkdirAll("sd_root/atmosphere/exefs_patches", 0700)
 		errCheck(w, "creating sd_root/atmosphere/exefs_patches", err)
 		fmt.Fprintf(w, "copying files...\n")
 		err = copyFolder("fake_tickets", "sd_root/atmosphere/exefs_patches/fake_tickets")
@@ -577,7 +577,7 @@ func main() {
 		errCheck(w, "building tinfoil", err)
 
 		fmt.Fprintf(w, "copying files...\n")
-		err = os.MkdirAll("sd_root/switch", os.ModeDir)
+		err = os.MkdirAll("sd_root/switch", 0700)
 		errCheck(w, "creating sd_root/switch", err)
 		err = copy("build/tinfoil/Tinfoil.nro", "sd_root/switch/Tinfoil.nro")
 		errCheck(w, "copying tinfoil", err)

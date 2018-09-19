@@ -1,3 +1,4 @@
 build/
 sd_root/
+vendor/
 hekate.bin

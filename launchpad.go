@@ -1,3 +1,9 @@
+/*
+   launchpad.go -- launchpadnx's one and only file
+   written by pika, licensed under the gnu gpl
+   you can grab a copy at https://www.gnu.org/licenses/gpl-3.0.en.html
+*/
+
 package main
 
 import (
@@ -575,7 +581,7 @@ func main() {
 		fmt.Fprintf(w, "copying files...\n")
 		err = os.MkdirAll("sd_root/switch", 0700)
 		errCheck(w, "creating sd_root/switch", err)
-		err = copy("build/tinfoil/Tinfoil.nro", "sd_root/switch/Tinfoil.nro")
+		err = copy("build/tinfoil/tinfoil.nro", "sd_root/switch/Tinfoil.nro")
 		errCheck(w, "copying tinfoil", err)
 	}
 
@@ -587,8 +593,12 @@ func main() {
 
 	f, err := os.Create("sd_root/bootloader/hekate_ipl.ini")
 	errCheck(w, "creating sd_root/bootloader/hekate_ipl.ini", err)
-	for _, v := range hekateConfig {
-		_, err := f.WriteString(v + "\n")
+	for i, v := range hekateConfig {
+		if i+1 == len(hekateConfig) {
+			_, err = f.WriteString(v)
+		} else {
+			_, err = f.WriteString(v + "\n")
+		}
 		errCheck(w, "writing to hekate_ipl.ini", err)
 	}
 	f.Close()

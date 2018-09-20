@@ -97,7 +97,7 @@ func main() {
 
 	if runtime.GOOS == "windows" {
 		// check for reqs
-		dkpCmds := []string{"pacman", "make", "git"}
+		dkpCmds := []string{"pacman", "make"}
 		for _, v := range dkpCmds {
 			_, err := exec.LookPath(v)
 			if err != nil {
@@ -113,7 +113,7 @@ func main() {
 		var dkpCmds []string
 		_, err := exec.LookPath("pacman")
 		if err == nil {
-			dkpCmds = []string{"pacman", "make", "git"}
+			dkpCmds = []string{"pacman", "make"}
 		} else {
 			dkpCmds = []string{"dkp-pacman", "make"}
 		}

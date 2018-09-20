@@ -23,17 +23,17 @@ del launchpad-windows-amd64.exe
 
 set GOOS=linux
 set GOARCH=386
-go build -o launchpad-linux-i386.exe
-zip -r9 launchpad-linux-i386.zip fake_tickets launchpad-linux-i386.exe
+go build -o launchpad-linux-i386
+zip -r9 launchpad-linux-i386.zip fake_tickets launchpad-linux-i386
 mv launchpad-linux-i386.zip release/launchpad-linux-i386.zip
-del launchpad-linux-i386.exe
+del launchpad-linux-i386
 
 set GOOS=linux
 set GOARCH=amd64
-go build -o launchpad-linux-amd64.exe
-zip -r9 launchpad-linux-amd64.zip fake_tickets launchpad-linux-amd64.exe
+go build -o launchpad-linux-amd64
+zip -r9 launchpad-linux-amd64.zip fake_tickets launchpad-linux-amd64
 mv launchpad-linux-amd64.zip release/launchpad-linux-amd64.zip
-del launchpad-linux-amd64.exe
+del launchpad-linux-amd64
 
 set GOOS=
 set GOARCH=

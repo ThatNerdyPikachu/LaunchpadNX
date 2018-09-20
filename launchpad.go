@@ -218,34 +218,18 @@ func main() {
 	folders := []string{"build/atmosphere", "build/hekate", "build/checkpoint",
 		"build/hbmenu", "build/sys-ftpd", "build/tinfoil"}
 
-	ap := false
-
 	for _, f := range folders {
 		_, err := os.Stat(f)
 		if err == nil {
-			_, err = os.Stat(f + "/stratosphere/loader/source/ldr_config.cpp")
-			if err == nil {
-				cmd := exec.Command("git", "fetch", "upstream")
-				cmd.Dir = f
-				err = cmd.Run()
+			r, err := git.PlainOpen(f)
+			errCheck(w, "opening "+f, err)
+
+			wt, err := r.Worktree()
+			errCheck(w, "opening the worktree for "+f, err)
+
+			err = wt.Pull(&git.PullOptions{RemoteName: "origin"})
+			if err != nil && err.Error() != "already up-to-date" {
 				errCheck(w, "updating the sources for "+f, err)
-
-				cmd = exec.Command("git", "merge", "upstream/master")
-				cmd.Dir = f
-				err = cmd.Run()
-				errCheck(w, "merging the sources for "+f, err)
-				ap = true
-			} else {
-				r, err := git.PlainOpen(f)
-				errCheck(w, "opening "+f, err)
-
-				wt, err := r.Worktree()
-				errCheck(w, "opening the worktree for "+f, err)
-
-				err = wt.Pull(&git.PullOptions{RemoteName: "origin"})
-				if err != nil && err.Error() != "already up-to-date" {
-					errCheck(w, "updating the sources for "+f, err)
-				}
 			}
 		}
 	}
@@ -299,16 +283,9 @@ func main() {
 		err = cmd.Run()
 		errCheck(w, "installing dependencies", err)
 	} else if runtime.GOOS == "linux" {
-		_, err = exec.LookPath("pacman")
-		if err == nil {
-			cmd := exec.Command("sudo", args...)
-			err = cmd.Run()
-			errCheck(w, "installing dependencies", err)
-		} else {
-			cmd := exec.Command("sudo", args...)
-			err = cmd.Run()
-			errCheck(w, "installing dependencies", err)
-		}
+		cmd := exec.Command("sudo", args...)
+		err = cmd.Run()
+		errCheck(w, "installing dependencies", err)
 	}
 
 	// the goddess that blessed your switch -- <3
@@ -334,63 +311,20 @@ func main() {
 	err = copy("build/hekate/output/libsys_lp0.bso", "sd_root/bootloader/sys/libsys_lp0.bso")
 	errCheck(w, "copying the hekate payload", err)
 
-	if ap == false {
-		if inArray(features, "2") || inArray(features, "1") || inArray(features, "6") {
-			fmt.Fprintf(w, "cloning atmosphere...\n")
+	fmt.Fprintf(w, "cloning atmosphere...\n")
 
-			cmd = exec.Command("git", "clone", "https://github.com/rajkosto/Atmosphere.git", "build/atmosphere")
-			err = cmd.Run()
-			errCheck(w, "cloning atmosphere", err)
-
-			cmd = exec.Command("git", "checkout", "rajnx")
-			cmd.Dir = "build/atmosphere"
-			err = cmd.Run()
-			errCheck(w, "checking out to rajnx", err)
-
-			cmd = exec.Command("git", "remote", "add", "upstream", "https://github.com/Atmosphere-NX/Atmosphere.git")
-			cmd.Dir = "build/atmosphere"
-			err = cmd.Run()
-			errCheck(w, "adding upstream", err)
-
-			cmd = exec.Command("git", "fetch", "upstream")
-			cmd.Dir = "build/atmosphere"
-			err = cmd.Run()
-			errCheck(w, "fetching upstream", err)
-
-			cmd = exec.Command("git", "merge", "upstream/master")
-			cmd.Dir = "build/atmosphere"
-			err = cmd.Run()
-			errCheck(w, "merging upstream into rajnx", err)
-
-			fmt.Fprintf(w, "patching atmosphere...\n")
-
-			cmd = exec.Command("git", "apply", "../../hbl.patch")
-			cmd.Dir = "build/atmosphere"
-			err = cmd.Run()
-			errCheck(w, "patching atmosphere", err)
-
-			fmt.Fprintf(w, "building atmosphere...\n")
-			cmd = exec.Command("make", "-j3")
-			cmd.Dir = "build/atmosphere/stratosphere"
-			err = cmd.Run()
-			errCheck(w, "building atmosphere", err)
-		} else {
-			fmt.Fprintf(w, "cloning atmosphere...\n")
-
-			_, err = git.PlainClone("build/hbmenu", false, &git.CloneOptions{
-				URL: "https://github.com/switchbrew/nx-hbmenu.git",
-			})
-			if err != nil && err.Error() != "repository already exists" {
-				errCheck(w, "cloning hbmenu", err)
-			}
-
-			fmt.Fprintf(w, "building atmosphere...\n")
-			cmd = exec.Command("make", "-j3")
-			cmd.Dir = "build/atmosphere/atmosphere"
-			err = cmd.Run()
-			errCheck(w, "building atmosphere", err)
-		}
+	_, err = git.PlainClone("build/hbmenu", false, &git.CloneOptions{
+		URL: "https://github.com/switchbrew/nx-hbmenu.git",
+	})
+	if err != nil && err.Error() != "repository already exists" {
+		errCheck(w, "cloning hbmenu", err)
 	}
+
+	fmt.Fprintf(w, "building atmosphere...\n")
+	cmd = exec.Command("make", "-j3")
+	cmd.Dir = "build/atmosphere/atmosphere"
+	err = cmd.Run()
+	errCheck(w, "building atmosphere", err)
 
 	fmt.Fprintf(w, "copying files...\n")
 	err = os.MkdirAll("sd_root/atmosphere/titles/0100000000000036/exefs", 0700)
@@ -474,37 +408,25 @@ func main() {
 	}
 
 	if inArray(features, "2") || inArray(features, "1") || inArray(features, "6") {
-		fmt.Fprintf(w, "cloning hbloader...\n")
-		_, err = git.PlainClone("build/hbloader", false, &git.CloneOptions{
-			URL: "https://github.com/switchbrew/nx-hbloader.git",
-		})
-		if err != nil && err.Error() != "repository already exists" {
-			errCheck(w, "cloning hbloader", err)
+		if !inArray(features, "no-hbloader") {
+			fmt.Fprintf(w, "cloning hbloader...\n")
+			_, err = git.PlainClone("build/hbloader", false, &git.CloneOptions{
+				URL: "https://github.com/switchbrew/nx-hbloader.git",
+			})
+			if err != nil && err.Error() != "repository already exists" {
+				errCheck(w, "cloning hbloader", err)
+			}
+
+			fmt.Fprintf(w, "building hbloader...\n")
+			cmd := exec.Command("make", "-j3")
+			cmd.Dir = "build/hbloader"
+			err = cmd.Run()
+			errCheck(w, "building hbloader", err)
+
+			fmt.Fprintf(w, "copying files...\n")
+			err = copy("build/hbloader/hbl.nsp", "sd_root/atmosphere/hbl.nsp")
+			errCheck(w, "copying hbloader", err)
 		}
-
-		fmt.Fprintf(w, "building hbloader...\n")
-		cmd := exec.Command("make", "-j3")
-		cmd.Dir = "build/hbloader"
-		err = cmd.Run()
-		errCheck(w, "building hbloader", err)
-
-		fmt.Fprintf(w, "copying files...\n")
-		err = copy("build/hbloader/hbl.nsp", "sd_root/cfw/hbl.nsp")
-		errCheck(w, "copying hbloader", err)
-
-		fmt.Fprintf(w, "creating hbloader config...\n")
-
-		f, err := os.Create("sd_root/cfw/hbl.ini")
-		errCheck(w, "creating sd_root/cfw/hbl.ini", err)
-
-		_, err = f.WriteString("[config]\n")
-		errCheck(w, "writing to hbl.ini", err)
-		_, err = f.WriteString("hbTitleId=010000000000100D\n")
-		errCheck(w, "writing to hbl.ini", err)
-		_, err = f.WriteString("hbKeyCombo=R")
-		errCheck(w, "writing to hbl.ini", err)
-
-		f.Close()
 
 		fmt.Fprintf(w, "cloning hbmenu...\n")
 		_, err = git.PlainClone("build/hbmenu", false, &git.CloneOptions{

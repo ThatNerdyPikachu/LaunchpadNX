@@ -313,18 +313,24 @@ func main() {
 
 	fmt.Fprintf(w, "cloning atmosphere...\n")
 
-	_, err = git.PlainClone("build/hbmenu", false, &git.CloneOptions{
-		URL: "https://github.com/switchbrew/nx-hbmenu.git",
+	_, err = git.PlainClone("build/atmosphere", false, &git.CloneOptions{
+		URL: "https://github.com/Atmosphere-NX/Atmosphere.git",
 	})
 	if err != nil && err.Error() != "repository already exists" {
-		errCheck(w, "cloning hbmenu", err)
+		errCheck(w, "cloning atmosphere", err)
 	}
 
-	fmt.Fprintf(w, "building atmosphere...\n")
+	fmt.Fprintf(w, "building exosphere...\n")
 	cmd = exec.Command("make", "-j3")
-	cmd.Dir = "build/atmosphere/atmosphere"
+	cmd.Dir = "build/atmosphere/exosphere"
 	err = cmd.Run()
-	errCheck(w, "building atmosphere", err)
+	errCheck(w, "building exosphere", err)
+
+	fmt.Fprintf(w, "building stratosphere...\n")
+	cmd = exec.Command("make", "-j3")
+	cmd.Dir = "build/atmosphere/stratosphere"
+	err = cmd.Run()
+	errCheck(w, "building stratosphere", err)
 
 	fmt.Fprintf(w, "copying files...\n")
 	err = os.MkdirAll("sd_root/atmosphere/titles/0100000000000036/exefs", 0700)
@@ -335,6 +341,8 @@ func main() {
 	errCheck(w, "copying creport's npdm", err)
 	err = os.MkdirAll("sd_root/cfw", 0700)
 	errCheck(w, "creating sd_root/cfw", err)
+	err = copy("build/atmosphere/exosphere/exosphere.bin", "sd_root/cfw/exosphere.bin")
+	errCheck(w, "copying exosphere", err)
 	err = copy("build/atmosphere/stratosphere/loader/loader.kip", "sd_root/cfw/loader.kip")
 	errCheck(w, "copying loader", err)
 	err = copy("build/atmosphere/stratosphere/pm/pm.kip", "sd_root/cfw/pm.kip")
@@ -356,7 +364,8 @@ func main() {
 			"",
 			"[CFW]",
 		}
-		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nogc,nosigchk"}
+		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nogc,nosigchk",
+			"secmon=cfw/exosphere.bin"}
 	} else if nogc {
 		hekateConfig = []string{
 			"[Stock]",
@@ -366,21 +375,24 @@ func main() {
 			"",
 			"[CFW]",
 		}
-		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nogc"}
+		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nogc",
+			"secmon=cfw/exosphere.bin"}
 	} else if inArray(features, "4") {
 		hekateConfig = []string{
 			"[Stock]",
 			"",
 			"[CFW]",
 		}
-		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nosigchk"}
+		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nosigchk",
+			"secmon=cfw/exosphere.bin"}
 	} else {
 		hekateConfig = []string{
 			"[Stock]",
 			"",
 			"[CFW]",
 		}
-		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip"}
+		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip",
+			"secmon=cfw/exosphere.bin"}
 	}
 
 	if inArray(features, "1") {

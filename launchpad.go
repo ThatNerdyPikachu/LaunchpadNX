@@ -364,8 +364,7 @@ func main() {
 			"",
 			"[CFW]",
 		}
-		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nogc,nosigchk",
-			"secmon=cfw/exosphere.bin"}
+		c = []string{"kip1=cfw/*", "kip1patch=nogc,nosigchk", "secmon=cfw/exosphere.bin"}
 	} else if nogc {
 		hekateConfig = []string{
 			"[Stock]",
@@ -375,24 +374,21 @@ func main() {
 			"",
 			"[CFW]",
 		}
-		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nogc",
-			"secmon=cfw/exosphere.bin"}
+		c = []string{"kip1=cfw/*", "kip1patch=nogc", "secmon=cfw/exosphere.bin"}
 	} else if inArray(features, "4") {
 		hekateConfig = []string{
 			"[Stock]",
 			"",
 			"[CFW]",
 		}
-		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip", "kip1patch=nosigchk",
-			"secmon=cfw/exosphere.bin"}
+		c = []string{"kip1=cfw/*", "kip1patch=nosigchk", "secmon=cfw/exosphere.bin"}
 	} else {
 		hekateConfig = []string{
 			"[Stock]",
 			"",
 			"[CFW]",
 		}
-		c = []string{"kip1=cfw/loader.kip", "kip1=cfw/pm.kip", "kip1=cfw/sm.kip",
-			"secmon=cfw/exosphere.bin"}
+		c = []string{"kip1=cfw/*", "secmon=cfw/exosphere.bin"}
 	}
 
 	if inArray(features, "1") {
@@ -463,7 +459,7 @@ func main() {
 		fmt.Fprintf(w, "copying files...\n")
 		err = copy("build/atmosphere/stratosphere/fs_mitm/fs_mitm.kip", "sd_root/cfw/fs_mitm.kip")
 		errCheck(w, "copying fs_mitm (layeredfs)", err)
-		c = append(c, "atmosphere=1", "kip1=cfw/fs_mitm.kip")
+		c = append(c, "atmosphere=1")
 	}
 
 	if inArray(features, "4") {
@@ -494,7 +490,6 @@ func main() {
 		errCheck(w, "copying sys-ftpd's sound files", err)
 		err = copy("build/sys-ftpd/sys-ftpd.kip", "sd_root/cfw/sys-ftpd.kip")
 		errCheck(w, "copying sys-ftpd", err)
-		c = append(c, "kip1=cfw/sys-ftpd.kip")
 	}
 
 	if inArray(features, "6") {

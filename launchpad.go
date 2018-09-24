@@ -92,6 +92,8 @@ func copyFolder(src, dst string) error {
 func main() {
 	w := ansicolor.NewAnsiColorWriter(os.Stdout)
 
+	var makeThreadFlag = "-j" + strconv.Itoa(runtime.NumCPU())
+	
 	resetTerm(w)
 	defer resetTerm(w)
 
@@ -296,9 +298,10 @@ func main() {
 	if err != nil && err.Error() != "repository already exists" {
 		errCheck(w, "cloning hekate", err)
 	}
-
+	
+	fmt.Fprintf(w, "make thread flag: " + makeThreadFlag + "\n")
 	fmt.Fprintf(w, "building hekate...\n")
-	cmd := exec.Command("make", "-j3")
+	cmd := exec.Command("make", makeThreadFlag)
 	cmd.Dir = "build/hekate"
 	err = cmd.Run()
 	errCheck(w, "building hekate", err)
@@ -321,13 +324,13 @@ func main() {
 	}
 
 	fmt.Fprintf(w, "building exosphere...\n")
-	cmd = exec.Command("make", "-j3")
+	cmd = exec.Command("make", makeThreadFlag)
 	cmd.Dir = "build/atmosphere/exosphere"
 	err = cmd.Run()
 	errCheck(w, "building exosphere", err)
 
 	fmt.Fprintf(w, "building stratosphere...\n")
-	cmd = exec.Command("make", "-j3")
+	cmd = exec.Command("make", makeThreadFlag)
 	cmd.Dir = "build/atmosphere/stratosphere"
 	err = cmd.Run()
 	errCheck(w, "building stratosphere", err)
@@ -401,7 +404,7 @@ func main() {
 		}
 
 		fmt.Fprintf(w, "building checkpoint...\n")
-		cmd := exec.Command("make", "-j3")
+		cmd := exec.Command("make", makeThreadFlag)
 		cmd.Dir = "build/checkpoint/switch"
 		err = cmd.Run()
 		errCheck(w, "building checkpoint", err)
@@ -426,7 +429,7 @@ func main() {
 			}
 
 			fmt.Fprintf(w, "building hbloader...\n")
-			cmd := exec.Command("make", "-j3")
+			cmd := exec.Command("make", makeThreadFlag)
 			cmd.Dir = "build/hbloader"
 			err = cmd.Run()
 			errCheck(w, "building hbloader", err)
@@ -445,7 +448,7 @@ func main() {
 		}
 
 		fmt.Fprintf(w, "building hbmenu...\n")
-		cmd = exec.Command("make", "nx", "-j3")
+		cmd = exec.Command("make", "nx", makeThreadFlag)
 		cmd.Dir = "build/hbmenu"
 		err = cmd.Run()
 		errCheck(w, "building hbmenu", err)
@@ -480,7 +483,7 @@ func main() {
 		}
 
 		fmt.Fprintf(w, "building sys-ftpd...\n")
-		cmd := exec.Command("make", "-j3")
+		cmd := exec.Command("make", makeThreadFlag)
 		cmd.Dir = "build/sys-ftpd"
 		err = cmd.Run()
 		errCheck(w, "building sys-ftpd", err)
@@ -502,7 +505,7 @@ func main() {
 		}
 
 		fmt.Fprintf(w, "building tinfoil...\n")
-		cmd := exec.Command("make", "-j3")
+		cmd := exec.Command("make", makeThreadFlag)
 		cmd.Dir = "build/tinfoil"
 		err = cmd.Run()
 		errCheck(w, "building tinfoil", err)

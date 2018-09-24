@@ -298,7 +298,7 @@ func main() {
 	}
 
 	fmt.Fprintf(w, "building hekate...\n")
-	cmd := exec.Command("make", "-j3")
+	cmd := exec.Command("make", "-j")
 	cmd.Dir = "build/hekate"
 	err = cmd.Run()
 	errCheck(w, "building hekate", err)
@@ -321,13 +321,13 @@ func main() {
 	}
 
 	fmt.Fprintf(w, "building exosphere...\n")
-	cmd = exec.Command("make", "-j3")
+	cmd = exec.Command("make", "-j")
 	cmd.Dir = "build/atmosphere/exosphere"
 	err = cmd.Run()
 	errCheck(w, "building exosphere", err)
 
 	fmt.Fprintf(w, "building stratosphere...\n")
-	cmd = exec.Command("make", "-j3")
+	cmd = exec.Command("make", "-j")
 	cmd.Dir = "build/atmosphere/stratosphere"
 	err = cmd.Run()
 	errCheck(w, "building stratosphere", err)
@@ -401,7 +401,7 @@ func main() {
 		}
 
 		fmt.Fprintf(w, "building checkpoint...\n")
-		cmd := exec.Command("make", "-j3")
+		cmd := exec.Command("make", "-j")
 		cmd.Dir = "build/checkpoint/switch"
 		err = cmd.Run()
 		errCheck(w, "building checkpoint", err)
@@ -416,25 +416,23 @@ func main() {
 	}
 
 	if inArray(features, "2") || inArray(features, "1") || inArray(features, "6") {
-		if !inArray(features, "no-hbloader") {
-			fmt.Fprintf(w, "cloning hbloader...\n")
-			_, err = git.PlainClone("build/hbloader", false, &git.CloneOptions{
-				URL: "https://github.com/switchbrew/nx-hbloader.git",
-			})
-			if err != nil && err.Error() != "repository already exists" {
-				errCheck(w, "cloning hbloader", err)
-			}
-
-			fmt.Fprintf(w, "building hbloader...\n")
-			cmd := exec.Command("make", "-j3")
-			cmd.Dir = "build/hbloader"
-			err = cmd.Run()
-			errCheck(w, "building hbloader", err)
-
-			fmt.Fprintf(w, "copying files...\n")
-			err = copy("build/hbloader/hbl.nsp", "sd_root/atmosphere/hbl.nsp")
-			errCheck(w, "copying hbloader", err)
+		fmt.Fprintf(w, "cloning hbloader...\n")
+		_, err = git.PlainClone("build/hbloader", false, &git.CloneOptions{
+			URL: "https://github.com/switchbrew/nx-hbloader.git",
+		})
+		if err != nil && err.Error() != "repository already exists" {
+			errCheck(w, "cloning hbloader", err)
 		}
+
+		fmt.Fprintf(w, "building hbloader...\n")
+		cmd := exec.Command("make", "-j")
+		cmd.Dir = "build/hbloader"
+		err = cmd.Run()
+		errCheck(w, "building hbloader", err)
+
+		fmt.Fprintf(w, "copying files...\n")
+		err = copy("build/hbloader/hbl.nsp", "sd_root/atmosphere/hbl.nsp")
+		errCheck(w, "copying hbloader", err)
 
 		fmt.Fprintf(w, "cloning hbmenu...\n")
 		_, err = git.PlainClone("build/hbmenu", false, &git.CloneOptions{
@@ -445,7 +443,7 @@ func main() {
 		}
 
 		fmt.Fprintf(w, "building hbmenu...\n")
-		cmd = exec.Command("make", "nx", "-j3")
+		cmd = exec.Command("make", "nx", "-j")
 		cmd.Dir = "build/hbmenu"
 		err = cmd.Run()
 		errCheck(w, "building hbmenu", err)
@@ -480,7 +478,7 @@ func main() {
 		}
 
 		fmt.Fprintf(w, "building sys-ftpd...\n")
-		cmd := exec.Command("make", "-j3")
+		cmd := exec.Command("make", "-j")
 		cmd.Dir = "build/sys-ftpd"
 		err = cmd.Run()
 		errCheck(w, "building sys-ftpd", err)
@@ -502,7 +500,7 @@ func main() {
 		}
 
 		fmt.Fprintf(w, "building tinfoil...\n")
-		cmd := exec.Command("make", "-j3")
+		cmd := exec.Command("make", "-j")
 		cmd.Dir = "build/tinfoil"
 		err = cmd.Run()
 		errCheck(w, "building tinfoil", err)

@@ -267,7 +267,7 @@ func main() {
 	}
 
 	if inArray(features, "2") {
-		args = append(args, "switch-freetype", "switch-libconfig")
+		args = append(args, "switch-freetype", "switch-libconfig switch-libjpeg-turbo")
 	}
 
 	if inArray(features, "5") {

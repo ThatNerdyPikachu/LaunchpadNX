@@ -267,7 +267,7 @@ func main() {
 	}
 
 	if inArray(features, "2") {
-		args = append(args, "switch-freetype", "switch-libconfig switch-libjpeg-turbo")
+		args = append(args, "switch-freetype", "switch-libconfig", "switch-libjpeg-turbo")
 	}
 
 	if inArray(features, "5") {
@@ -280,7 +280,7 @@ func main() {
 
 	if runtime.GOOS == "windows" {
 		cmd := exec.Command("pacman", args...)
-		err = cmd.Run()
+		cmd.Stderr = os.Stderr
 		errCheck(w, "installing dependencies", err)
 	} else if runtime.GOOS == "linux" {
 		cmd := exec.Command("sudo", args...)

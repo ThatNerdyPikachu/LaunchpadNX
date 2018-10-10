@@ -208,7 +208,7 @@ func main() {
 				fmt.Fprintf(w, "\x1b[94m\n")
 				break
 			} else if strings.ToLower(resp) == "n" {
-				fmt.Fprintf(w, "build aborted.")
+				fmt.Fprintf(w, "build aborted.\n")
 				resetTerm(w)
 				os.Exit(0)
 			}
@@ -493,7 +493,7 @@ func main() {
 	if inArray(features, "6") {
 		fmt.Fprintf(w, "cloning tinfoil...\n")
 		_, err = git.PlainClone("build/tinfoil", false, &git.CloneOptions{
-			URL: "https://github.com/Adubbz/Tinfoil.git",
+			URL: "https://github.com/XorTroll/Tinfoil.git",
 		})
 		if err != nil && err.Error() != "repository already exists" {
 			errCheck(w, "cloning tinfoil", err)

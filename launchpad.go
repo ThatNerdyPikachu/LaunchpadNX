@@ -203,8 +203,7 @@ func main() {
 		for {
 			resp := input(w, "\x1b[91mwarning: you already have a package built. running this build will delete that one.\nare you sure you want to continue? (y/n): ")
 			if strings.ToLower(resp) == "y" {
-				err = os.RemoveAll("sd_root")
-				errCheck(w, "deleting sd_root", err)
+				errCheck(w, "deleting sd_root", os.RemoveAll("sd_root"))
 				fmt.Fprintf(w, "\x1b[94m\n")
 				break
 			} else if strings.ToLower(resp) == "n" {
@@ -280,12 +279,10 @@ func main() {
 
 	if runtime.GOOS == "windows" {
 		cmd := exec.Command("pacman", args...)
-		cmd.Stderr = os.Stderr
-		errCheck(w, "installing dependencies", err)
+		errCheck(w, "installing dependencies", cmd.Run())
 	} else if runtime.GOOS == "linux" {
 		cmd := exec.Command("sudo", args...)
-		err = cmd.Run()
-		errCheck(w, "installing dependencies", err)
+		errCheck(w, "installing dependencies", cmd.Run())
 	}
 
 	// the goddess that blessed your switch -- <3
@@ -300,16 +297,13 @@ func main() {
 	fmt.Fprintf(w, "building hekate...\n")
 	cmd := exec.Command("make", "-j")
 	cmd.Dir = "build/hekate"
-	err = cmd.Run()
-	errCheck(w, "building hekate", err)
+	errCheck(w, "building hekate", cmd.Run())
 
 	fmt.Fprintf(w, "copying files...\n")
-	err = copyFile("build/hekate/output/hekate.bin", "hekate.bin")
-	errCheck(w, "copying the hekate payload", err)
-	err = os.MkdirAll("sd_root/bootloader/sys", 0700)
-	errCheck(w, "creating sd_root/bootloader/sys", err)
-	err = copyFile("build/hekate/output/libsys_lp0.bso", "sd_root/bootloader/sys/libsys_lp0.bso")
-	errCheck(w, "copying the hekate payload", err)
+	errCheck(w, "copying the hekate payload", copyFile("build/hekate/output/hekate.bin", "hekate.bin"))
+	errCheck(w, "creating sd_root/bootloader/sys", os.MkdirAll("sd_root/bootloader/sys", 0700))
+	errCheck(w, "copying the hekate payload", copyFile("build/hekate/output/libsys_lp0.bso",
+		"sd_root/bootloader/sys/libsys_lp0.bso"))
 
 	fmt.Fprintf(w, "cloning atmosphere...\n")
 
@@ -323,32 +317,33 @@ func main() {
 	fmt.Fprintf(w, "building exosphere...\n")
 	cmd = exec.Command("make", "-j")
 	cmd.Dir = "build/atmosphere/exosphere"
-	err = cmd.Run()
-	errCheck(w, "building exosphere", err)
+	errCheck(w, "building exosphere", cmd.Run())
 
 	fmt.Fprintf(w, "building stratosphere...\n")
 	cmd = exec.Command("make", "-j")
 	cmd.Dir = "build/atmosphere/stratosphere"
-	err = cmd.Run()
-	errCheck(w, "building stratosphere", err)
+	errCheck(w, "building stratosphere", cmd.Run())
 
 	fmt.Fprintf(w, "copying files...\n")
-	err = os.MkdirAll("sd_root/atmosphere/titles/0100000000000036/exefs", 0700)
-	errCheck(w, "creating sd_root/atmosphere/titles/0100000000000036/exefs", err)
-	err = copyFile("build/atmosphere/stratosphere/creport/creport.npdm", "sd_root/atmosphere/titles/0100000000000036/exefs/main.npdm")
-	errCheck(w, "copying creport's npdm", err)
-	err = copyFile("build/atmosphere/stratosphere/creport/creport.nso", "sd_root/atmosphere/titles/0100000000000036/exefs/main")
-	errCheck(w, "copying creport's npdm", err)
-	err = os.MkdirAll("sd_root/cfw", 0700)
-	errCheck(w, "creating sd_root/cfw", err)
-	err = copyFile("build/atmosphere/exosphere/exosphere.bin", "sd_root/cfw/exosphere.bin")
-	errCheck(w, "copying exosphere", err)
-	err = copyFile("build/atmosphere/stratosphere/loader/loader.kip", "sd_root/cfw/loader.kip")
-	errCheck(w, "copying loader", err)
-	err = copyFile("build/atmosphere/stratosphere/pm/pm.kip", "sd_root/cfw/pm.kip")
-	errCheck(w, "copying pm", err)
-	err = copyFile("build/atmosphere/stratosphere/sm/sm.kip", "sd_root/cfw/sm.kip")
-	errCheck(w, "copying sm", err)
+	errCheck(w, "creating sd_root/atmosphere/titles/0100000000000036/exefs",
+		os.MkdirAll("sd_root/atmosphere/titles/0100000000000036/exefs", 0700))
+
+	errCheck(w, "copying creport's npdm", copyFile("build/atmosphere/stratosphere/creport/creport.npdm",
+		"sd_root/atmosphere/titles/0100000000000036/exefs/main.npdm"))
+
+	errCheck(w, "copying creport's npdm", copyFile("build/atmosphere/stratosphere/creport/creport.nso",
+		"sd_root/atmosphere/titles/0100000000000036/exefs/main"))
+	errCheck(w, "creating sd_root/cfw", os.MkdirAll("sd_root/cfw", 0700))
+
+	errCheck(w, "copying exosphere", copyFile("build/atmosphere/exosphere/exosphere.bin",
+		"sd_root/cfw/exosphere.bin"))
+
+	errCheck(w, "copying loader", copyFile("build/atmosphere/stratosphere/loader/loader.kip",
+		"sd_root/cfw/loader.kip"))
+
+	errCheck(w, "copying pm", copyFile("build/atmosphere/stratosphere/pm/pm.kip", "sd_root/cfw/pm.kip"))
+
+	errCheck(w, "copying sm", copyFile("build/atmosphere/stratosphere/sm/sm.kip", "sd_root/cfw/sm.kip"))
 
 	var (
 		hekateConfig []string
@@ -403,16 +398,13 @@ func main() {
 		fmt.Fprintf(w, "building checkpoint...\n")
 		cmd := exec.Command("make", "-j")
 		cmd.Dir = "build/checkpoint/switch"
-		err = cmd.Run()
-		errCheck(w, "building checkpoint", err)
+		errCheck(w, "building checkpoint", cmd.Run())
 
 		fmt.Fprintf(w, "copying files...\n")
-		err = os.MkdirAll("sd_root/switch", 0700)
-		errCheck(w, "creating sd_root/switch", err)
-		err = os.MkdirAll("sd_root/switch/Checkpoint", 0700)
-		errCheck(w, "creating sd_root/switch/Checkpoint", err)
-		err = copyFile("build/checkpoint/switch/out/Checkpoint.nro", "sd_root/switch/Checkpoint/Checkpoint.nro")
-		errCheck(w, "copying checkpoint", err)
+		errCheck(w, "creating sd_root/switch", os.MkdirAll("sd_root/switch", 0700))
+		errCheck(w, "creating sd_root/switch/Checkpoint", os.MkdirAll("sd_root/switch/Checkpoint", 0700))
+		errCheck(w, "copying checkpoint", copyFile("build/checkpoint/switch/out/Checkpoint.nro",
+			"sd_root/switch/Checkpoint/Checkpoint.nro"))
 	}
 
 	if inArray(features, "2") || inArray(features, "1") || inArray(features, "6") {
@@ -427,12 +419,10 @@ func main() {
 		fmt.Fprintf(w, "building hbloader...\n")
 		cmd := exec.Command("make", "-j")
 		cmd.Dir = "build/hbloader"
-		err = cmd.Run()
-		errCheck(w, "building hbloader", err)
+		errCheck(w, "building hbloader", cmd.Run())
 
 		fmt.Fprintf(w, "copying files...\n")
-		err = copyFile("build/hbloader/hbl.nsp", "sd_root/atmosphere/hbl.nsp")
-		errCheck(w, "copying hbloader", err)
+		errCheck(w, "copying hbloader", copyFile("build/hbloader/hbl.nsp", "sd_root/atmosphere/hbl.nsp"))
 
 		fmt.Fprintf(w, "cloning hbmenu...\n")
 		_, err = git.PlainClone("build/hbmenu", false, &git.CloneOptions{
@@ -445,27 +435,24 @@ func main() {
 		fmt.Fprintf(w, "building hbmenu...\n")
 		cmd = exec.Command("make", "nx", "-j")
 		cmd.Dir = "build/hbmenu"
-		err = cmd.Run()
-		errCheck(w, "building hbmenu", err)
+		errCheck(w, "building hbmenu", cmd.Run())
 
 		fmt.Fprintf(w, "copying files...\n")
-		err = copyFile("build/hbmenu/hbmenu.nro", "sd_root/hbmenu.nro")
-		errCheck(w, "copying hbmenu", err)
+		errCheck(w, "copying hbmenu", copyFile("build/hbmenu/hbmenu.nro", "sd_root/hbmenu.nro"))
 	}
 
 	if inArray(features, "3") {
 		fmt.Fprintf(w, "copying files...\n")
-		err = copyFile("build/atmosphere/stratosphere/fs_mitm/fs_mitm.kip", "sd_root/cfw/fs_mitm.kip")
-		errCheck(w, "copying fs_mitm (layeredfs)", err)
+		errCheck(w, "copying fs_mitm (layeredfs)", copyFile("build/atmosphere/stratosphere/fs_mitm/fs_mitm.kip",
+			"sd_root/cfw/fs_mitm.kip"))
 		c = append(c, "atmosphere=1")
 	}
 
 	if inArray(features, "4") {
-		err = os.MkdirAll("sd_root/atmosphere/exefs_patches", 0700)
-		errCheck(w, "creating sd_root/atmosphere/exefs_patches", err)
+		errCheck(w, "creating sd_root/atmosphere/exefs_patches", os.MkdirAll("sd_root/atmosphere/exefs_patches", 0700))
 		fmt.Fprintf(w, "copying files...\n")
-		err = copyFolder("fake_tickets", "sd_root/atmosphere/exefs_patches/fake_tickets")
-		errCheck(w, "copying fake_tickets (sigpatches)", err)
+		errCheck(w, "copying fake_tickets (sigpatches)", copyFolder("fake_tickets",
+			"sd_root/atmosphere/exefs_patches/fake_tickets"))
 	}
 
 	if inArray(features, "5") {
@@ -480,14 +467,11 @@ func main() {
 		fmt.Fprintf(w, "building sys-ftpd...\n")
 		cmd := exec.Command("make", "-j")
 		cmd.Dir = "build/sys-ftpd"
-		err = cmd.Run()
-		errCheck(w, "building sys-ftpd", err)
+		errCheck(w, "building sys-ftpd", cmd.Run())
 
 		fmt.Fprintf(w, "copying files...\n")
-		err = copyFolder("build/sys-ftpd/sd_card/ftpd", "sd_root/ftpd")
-		errCheck(w, "copying sys-ftpd's sound files", err)
-		err = copyFile("build/sys-ftpd/sys-ftpd.kip", "sd_root/cfw/sys-ftpd.kip")
-		errCheck(w, "copying sys-ftpd", err)
+		errCheck(w, "copying sys-ftpd's sound files", copyFolder("build/sys-ftpd/sd_card/ftpd", "sd_root/ftpd"))
+		errCheck(w, "copying sys-ftpd", copyFile("build/sys-ftpd/sys-ftpd.kip", "sd_root/cfw/sys-ftpd.kip"))
 	}
 
 	if inArray(features, "6") {
@@ -502,14 +486,11 @@ func main() {
 		fmt.Fprintf(w, "building tinfoil...\n")
 		cmd := exec.Command("make", "-j")
 		cmd.Dir = "build/tinfoil"
-		err = cmd.Run()
-		errCheck(w, "building tinfoil", err)
+		errCheck(w, "building tinfoil", cmd.Run())
 
 		fmt.Fprintf(w, "copying files...\n")
-		err = os.MkdirAll("sd_root/switch", 0700)
-		errCheck(w, "creating sd_root/switch", err)
-		err = copyFile("build/tinfoil/tinfoil.nro", "sd_root/switch/Tinfoil.nro")
-		errCheck(w, "copying tinfoil", err)
+		errCheck(w, "creating sd_root/switch", os.MkdirAll("sd_root/switch", 0700))
+		errCheck(w, "copying tinfoil", copyFile("build/tinfoil/tinfoil.nro", "sd_root/switch/Tinfoil.nro"))
 	}
 
 	fmt.Fprintf(w, "creating hekate config...\n\n")

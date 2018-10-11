@@ -21,11 +21,11 @@ import (
 	"strings"
 )
 
-func resetTerm(w io.Writer) {
+func resetTerm(w *io.Writer) {
 	fmt.Fprintf(w, "\x1b[0m")
 }
 
-func input(w io.Writer, prompt string) string {
+func input(w *io.Writer, prompt string) string {
 	fmt.Fprintf(w, prompt)
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
@@ -37,7 +37,7 @@ func wait() {
 	s.Scan()
 }
 
-func errCheck(w io.Writer, task string, err error) {
+func errCheck(w *io.Writer, task string, err error) {
 	if err != nil {
 		fmt.Fprintf(w, "\x1b[91man error occured while %s:\n", task)
 		panic(err)
@@ -156,7 +156,7 @@ func main() {
 	var features []string
 
 	for {
-		resp := input(w, "\x1b[94mplease type the numbers of the features that you want, seperated by spaces (or type '\x1b[91mall\x1b[94m' to compile everything): ")
+		resp := input(&w, "\x1b[94mplease type the numbers of the features that you want, seperated by spaces (or type '\x1b[91mall\x1b[94m' to compile everything): ")
 		features = strings.Split(resp, " ")
 		if features[0] == "all" {
 			features = []string{"1", "2", "3", "4", "5", "6"}
@@ -186,7 +186,7 @@ func main() {
 
 	var nogc bool
 	for {
-		resp := input(w, "do you need nogc? (y/n): ")
+		resp := input(&w, "do you need nogc? (y/n): ")
 		if strings.ToLower(resp) == "y" {
 			nogc = true
 			fmt.Fprintf(w, "\n")
@@ -201,9 +201,9 @@ func main() {
 	_, err := os.Stat("sd_root")
 	if err == nil {
 		for {
-			resp := input(w, "\x1b[91mwarning: you already have a package built. running this build will delete that one.\nare you sure you want to continue? (y/n): ")
+			resp := input(&w, "\x1b[91mwarning: you already have a package built. running this build will delete that one.\nare you sure you want to continue? (y/n): ")
 			if strings.ToLower(resp) == "y" {
-				errCheck(w, "deleting sd_root", os.RemoveAll("sd_root"))
+				errCheck(&w, "deleting sd_root", os.RemoveAll("sd_root"))
 				fmt.Fprintf(w, "\x1b[94m\n")
 				break
 			} else if strings.ToLower(resp) == "n" {
@@ -221,14 +221,14 @@ func main() {
 		_, err := os.Stat(f)
 		if err == nil {
 			r, err := git.PlainOpen(f)
-			errCheck(w, "opening "+f, err)
+			errCheck(&w, "opening "+f, err)
 
 			wt, err := r.Worktree()
-			errCheck(w, "opening the worktree for "+f, err)
+			errCheck(&w, "opening the worktree for "+f, err)
 
 			err = wt.Pull(&git.PullOptions{RemoteName: "origin"})
 			if err != nil && err.Error() != "already up-to-date" {
-				errCheck(w, "updating the sources for "+f, err)
+				errCheck(&w, "updating the sources for "+f, err)
 			}
 		}
 	} */
@@ -244,7 +244,7 @@ func main() {
 			err = exec.Command("sudo", "dkp-pacman", "-Syu", "--noconfirm").Run()
 		}
 	}
-	errCheck(w, "running pacman -Syu", err)
+	errCheck(&w, "running pacman -Syu", err)
 
 	fmt.Fprintf(w, "installing dependencies...\n")
 
@@ -279,10 +279,10 @@ func main() {
 
 	if runtime.GOOS == "windows" {
 		cmd := exec.Command("pacman", args...)
-		errCheck(w, "installing dependencies", cmd.Run())
+		errCheck(&w, "installing dependencies", cmd.Run())
 	} else if runtime.GOOS == "linux" {
 		cmd := exec.Command("sudo", args...)
-		errCheck(w, "installing dependencies", cmd.Run())
+		errCheck(&w, "installing dependencies", cmd.Run())
 	}
 
 	// the goddess that blessed your switch -- <3
@@ -291,18 +291,18 @@ func main() {
 		URL: "https://github.com/CTCaer/hekate.git",
 	})
 	if err != nil && err.Error() != "repository already exists" {
-		errCheck(w, "cloning hekate", err)
+		errCheck(&w, "cloning hekate", err)
 	}
 
 	fmt.Fprintf(w, "building hekate...\n")
 	cmd := exec.Command("make", "-j")
 	cmd.Dir = "build/hekate"
-	errCheck(w, "building hekate", cmd.Run())
+	errCheck(&w, "building hekate", cmd.Run())
 
 	fmt.Fprintf(w, "copying files...\n")
-	errCheck(w, "copying the hekate payload", copyFile("build/hekate/output/hekate.bin", "hekate.bin"))
-	errCheck(w, "creating sd_root/bootloader/sys", os.MkdirAll("sd_root/bootloader/sys", 0700))
-	errCheck(w, "copying the hekate payload", copyFile("build/hekate/output/libsys_lp0.bso",
+	errCheck(&w, "copying the hekate payload", copyFile("build/hekate/output/hekate.bin", "hekate.bin"))
+	errCheck(&w, "creating sd_root/bootloader/sys", os.MkdirAll("sd_root/bootloader/sys", 0700))
+	errCheck(&w, "copying the hekate payload", copyFile("build/hekate/output/libsys_lp0.bso",
 		"sd_root/bootloader/sys/libsys_lp0.bso"))
 
 	fmt.Fprintf(w, "cloning atmosphere...\n")
@@ -311,39 +311,39 @@ func main() {
 		URL: "https://github.com/Atmosphere-NX/Atmosphere.git",
 	})
 	if err != nil && err.Error() != "repository already exists" {
-		errCheck(w, "cloning atmosphere", err)
+		errCheck(&w, "cloning atmosphere", err)
 	}
 
 	fmt.Fprintf(w, "building exosphere...\n")
 	cmd = exec.Command("make", "-j")
 	cmd.Dir = "build/atmosphere/exosphere"
-	errCheck(w, "building exosphere", cmd.Run())
+	errCheck(&w, "building exosphere", cmd.Run())
 
 	fmt.Fprintf(w, "building stratosphere...\n")
 	cmd = exec.Command("make", "-j")
 	cmd.Dir = "build/atmosphere/stratosphere"
-	errCheck(w, "building stratosphere", cmd.Run())
+	errCheck(&w, "building stratosphere", cmd.Run())
 
 	fmt.Fprintf(w, "copying files...\n")
-	errCheck(w, "creating sd_root/atmosphere/titles/0100000000000036/exefs",
+	errCheck(&w, "creating sd_root/atmosphere/titles/0100000000000036/exefs",
 		os.MkdirAll("sd_root/atmosphere/titles/0100000000000036/exefs", 0700))
 
-	errCheck(w, "copying creport's npdm", copyFile("build/atmosphere/stratosphere/creport/creport.npdm",
+	errCheck(&w, "copying creport's npdm", copyFile("build/atmosphere/stratosphere/creport/creport.npdm",
 		"sd_root/atmosphere/titles/0100000000000036/exefs/main.npdm"))
 
-	errCheck(w, "copying creport's npdm", copyFile("build/atmosphere/stratosphere/creport/creport.nso",
+	errCheck(&w, "copying creport's npdm", copyFile("build/atmosphere/stratosphere/creport/creport.nso",
 		"sd_root/atmosphere/titles/0100000000000036/exefs/main"))
-	errCheck(w, "creating sd_root/cfw", os.MkdirAll("sd_root/cfw", 0700))
+	errCheck(&w, "creating sd_root/cfw", os.MkdirAll("sd_root/cfw", 0700))
 
-	errCheck(w, "copying exosphere", copyFile("build/atmosphere/exosphere/exosphere.bin",
+	errCheck(&w, "copying exosphere", copyFile("build/atmosphere/exosphere/exosphere.bin",
 		"sd_root/cfw/exosphere.bin"))
 
-	errCheck(w, "copying loader", copyFile("build/atmosphere/stratosphere/loader/loader.kip",
+	errCheck(&w, "copying loader", copyFile("build/atmosphere/stratosphere/loader/loader.kip",
 		"sd_root/cfw/loader.kip"))
 
-	errCheck(w, "copying pm", copyFile("build/atmosphere/stratosphere/pm/pm.kip", "sd_root/cfw/pm.kip"))
+	errCheck(&w, "copying pm", copyFile("build/atmosphere/stratosphere/pm/pm.kip", "sd_root/cfw/pm.kip"))
 
-	errCheck(w, "copying sm", copyFile("build/atmosphere/stratosphere/sm/sm.kip", "sd_root/cfw/sm.kip"))
+	errCheck(&w, "copying sm", copyFile("build/atmosphere/stratosphere/sm/sm.kip", "sd_root/cfw/sm.kip"))
 
 	var (
 		hekateConfig []string
@@ -392,18 +392,18 @@ func main() {
 			URL: "https://github.com/FlagBrew/Checkpoint.git",
 		})
 		if err != nil && err.Error() != "repository already exists" {
-			errCheck(w, "cloning checkpoint", err)
+			errCheck(&w, "cloning checkpoint", err)
 		}
 
 		fmt.Fprintf(w, "building checkpoint...\n")
 		cmd := exec.Command("make", "-j")
 		cmd.Dir = "build/checkpoint/switch"
-		errCheck(w, "building checkpoint", cmd.Run())
+		errCheck(&w, "building checkpoint", cmd.Run())
 
 		fmt.Fprintf(w, "copying files...\n")
-		errCheck(w, "creating sd_root/switch", os.MkdirAll("sd_root/switch", 0700))
-		errCheck(w, "creating sd_root/switch/Checkpoint", os.MkdirAll("sd_root/switch/Checkpoint", 0700))
-		errCheck(w, "copying checkpoint", copyFile("build/checkpoint/switch/out/Checkpoint.nro",
+		errCheck(&w, "creating sd_root/switch", os.MkdirAll("sd_root/switch", 0700))
+		errCheck(&w, "creating sd_root/switch/Checkpoint", os.MkdirAll("sd_root/switch/Checkpoint", 0700))
+		errCheck(&w, "copying checkpoint", copyFile("build/checkpoint/switch/out/Checkpoint.nro",
 			"sd_root/switch/Checkpoint/Checkpoint.nro"))
 	}
 
@@ -413,45 +413,45 @@ func main() {
 			URL: "https://github.com/switchbrew/nx-hbloader.git",
 		})
 		if err != nil && err.Error() != "repository already exists" {
-			errCheck(w, "cloning hbloader", err)
+			errCheck(&w, "cloning hbloader", err)
 		}
 
 		fmt.Fprintf(w, "building hbloader...\n")
 		cmd := exec.Command("make", "-j")
 		cmd.Dir = "build/hbloader"
-		errCheck(w, "building hbloader", cmd.Run())
+		errCheck(&w, "building hbloader", cmd.Run())
 
 		fmt.Fprintf(w, "copying files...\n")
-		errCheck(w, "copying hbloader", copyFile("build/hbloader/hbl.nsp", "sd_root/atmosphere/hbl.nsp"))
+		errCheck(&w, "copying hbloader", copyFile("build/hbloader/hbl.nsp", "sd_root/atmosphere/hbl.nsp"))
 
 		fmt.Fprintf(w, "cloning hbmenu...\n")
 		_, err = git.PlainClone("build/hbmenu", false, &git.CloneOptions{
 			URL: "https://github.com/switchbrew/nx-hbmenu.git",
 		})
 		if err != nil && err.Error() != "repository already exists" {
-			errCheck(w, "cloning hbmenu", err)
+			errCheck(&w, "cloning hbmenu", err)
 		}
 
 		fmt.Fprintf(w, "building hbmenu...\n")
 		cmd = exec.Command("make", "nx", "-j")
 		cmd.Dir = "build/hbmenu"
-		errCheck(w, "building hbmenu", cmd.Run())
+		errCheck(&w, "building hbmenu", cmd.Run())
 
 		fmt.Fprintf(w, "copying files...\n")
-		errCheck(w, "copying hbmenu", copyFile("build/hbmenu/hbmenu.nro", "sd_root/hbmenu.nro"))
+		errCheck(&w, "copying hbmenu", copyFile("build/hbmenu/hbmenu.nro", "sd_root/hbmenu.nro"))
 	}
 
 	if inArray(features, "3") {
 		fmt.Fprintf(w, "copying files...\n")
-		errCheck(w, "copying fs_mitm (layeredfs)", copyFile("build/atmosphere/stratosphere/fs_mitm/fs_mitm.kip",
+		errCheck(&w, "copying fs_mitm (layeredfs)", copyFile("build/atmosphere/stratosphere/fs_mitm/fs_mitm.kip",
 			"sd_root/cfw/fs_mitm.kip"))
 		c = append(c, "atmosphere=1")
 	}
 
 	if inArray(features, "4") {
-		errCheck(w, "creating sd_root/atmosphere/exefs_patches", os.MkdirAll("sd_root/atmosphere/exefs_patches", 0700))
+		errCheck(&w, "creating sd_root/atmosphere/exefs_patches", os.MkdirAll("sd_root/atmosphere/exefs_patches", 0700))
 		fmt.Fprintf(w, "copying files...\n")
-		errCheck(w, "copying fake_tickets (sigpatches)", copyFolder("fake_tickets",
+		errCheck(&w, "copying fake_tickets (sigpatches)", copyFolder("fake_tickets",
 			"sd_root/atmosphere/exefs_patches/fake_tickets"))
 	}
 
@@ -461,17 +461,17 @@ func main() {
 			URL: "https://github.com/jakibaki/sys-ftpd.git",
 		})
 		if err != nil && err.Error() != "repository already exists" {
-			errCheck(w, "cloning sys-ftpd", err)
+			errCheck(&w, "cloning sys-ftpd", err)
 		}
 
 		fmt.Fprintf(w, "building sys-ftpd...\n")
 		cmd := exec.Command("make", "-j")
 		cmd.Dir = "build/sys-ftpd"
-		errCheck(w, "building sys-ftpd", cmd.Run())
+		errCheck(&w, "building sys-ftpd", cmd.Run())
 
 		fmt.Fprintf(w, "copying files...\n")
-		errCheck(w, "copying sys-ftpd's sound files", copyFolder("build/sys-ftpd/sd_card/ftpd", "sd_root/ftpd"))
-		errCheck(w, "copying sys-ftpd", copyFile("build/sys-ftpd/sys-ftpd.kip", "sd_root/cfw/sys-ftpd.kip"))
+		errCheck(&w, "copying sys-ftpd's sound files", copyFolder("build/sys-ftpd/sd_card/ftpd", "sd_root/ftpd"))
+		errCheck(&w, "copying sys-ftpd", copyFile("build/sys-ftpd/sys-ftpd.kip", "sd_root/cfw/sys-ftpd.kip"))
 	}
 
 	if inArray(features, "6") {
@@ -480,17 +480,17 @@ func main() {
 			URL: "https://github.com/XorTroll/Tinfoil.git",
 		})
 		if err != nil && err.Error() != "repository already exists" {
-			errCheck(w, "cloning tinfoil", err)
+			errCheck(&w, "cloning tinfoil", err)
 		}
 
 		fmt.Fprintf(w, "building tinfoil...\n")
 		cmd := exec.Command("make", "-j")
 		cmd.Dir = "build/tinfoil"
-		errCheck(w, "building tinfoil", cmd.Run())
+		errCheck(&w, "building tinfoil", cmd.Run())
 
 		fmt.Fprintf(w, "copying files...\n")
-		errCheck(w, "creating sd_root/switch", os.MkdirAll("sd_root/switch", 0700))
-		errCheck(w, "copying tinfoil", copyFile("build/tinfoil/tinfoil.nro", "sd_root/switch/Tinfoil.nro"))
+		errCheck(&w, "creating sd_root/switch", os.MkdirAll("sd_root/switch", 0700))
+		errCheck(&w, "copying tinfoil", copyFile("build/tinfoil/tinfoil.nro", "sd_root/switch/Tinfoil.nro"))
 	}
 
 	fmt.Fprintf(w, "creating hekate config...\n\n")
@@ -500,14 +500,14 @@ func main() {
 	}
 
 	f, err := os.Create("sd_root/bootloader/hekate_ipl.ini")
-	errCheck(w, "creating sd_root/bootloader/hekate_ipl.ini", err)
+	errCheck(&w, "creating sd_root/bootloader/hekate_ipl.ini", err)
 	for i, v := range hekateConfig {
 		if i+1 == len(hekateConfig) {
 			_, err = f.WriteString(v)
 		} else {
 			_, err = f.WriteString(v + "\n")
 		}
-		errCheck(w, "writing to hekate_ipl.ini", err)
+		errCheck(&w, "writing to hekate_ipl.ini", err)
 	}
 	f.Close()
 

@@ -110,7 +110,7 @@ func main() {
 		}
 	} else if runtime.GOOS == "linux" {
 		// check for reqs
-		var dkpCmds []string
+		dkpCmds := []string{}
 		_, err := exec.LookPath("pacman")
 		if err == nil {
 			dkpCmds = []string{"pacman", "make"}
@@ -153,7 +153,7 @@ func main() {
 		fmt.Fprintf(w, "\x1b[91m%d: %s\n", i+1, v)
 	}
 
-	var features []string
+	features := []string{}
 
 	for {
 		resp := input(&w, "\x1b[94mplease type the numbers of the features that you want, seperated by spaces (or type '\x1b[91mall\x1b[94m' to compile everything): ")
@@ -168,7 +168,7 @@ func main() {
 			continue
 		}
 		nums := []int{1, 2, 3, 4, 5, 6}
-		var good bool
+		good := false
 		for _, v := range nums {
 			i, err := strconv.Atoi(features[0])
 			if err != nil {
@@ -184,7 +184,7 @@ func main() {
 		}
 	}
 
-	var nogc bool
+	nogc := false
 	for {
 		resp := input(&w, "do you need nogc? (y/n): ")
 		if strings.ToLower(resp) == "y" {
@@ -248,7 +248,7 @@ func main() {
 
 	fmt.Fprintf(w, "installing dependencies...\n")
 
-	var args []string
+	args := []string{}
 
 	if runtime.GOOS == "windows" {
 		args = []string{"-S", "--noconfirm", "--needed", "switch-dev", "devkitARM"}
@@ -345,10 +345,8 @@ func main() {
 
 	errCheck(&w, "copying sm", copyFile("build/atmosphere/stratosphere/sm/sm.kip", "sd_root/cfw/sm.kip"))
 
-	var (
-		hekateConfig []string
-		c            []string
-	)
+	hekateConfig := []string{}
+	c := []string{}
 
 	if nogc && inArray(features, "4") {
 		hekateConfig = []string{

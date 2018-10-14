@@ -214,7 +214,7 @@ func main() {
 		}
 	}
 
-	/* folders := []string{"build/atmosphere", "build/hekate", "build/checkpoint",
+	folders := []string{"build/atmosphere", "build/hekate", "build/checkpoint",
 		"build/hbmenu", "build/sys-ftpd", "build/tinfoil"}
 
 	for _, f := range folders {
@@ -231,7 +231,7 @@ func main() {
 				errCheck(&w, "updating the sources for "+f, err)
 			}
 		}
-	} */
+	}
 
 	fmt.Fprintf(w, "running pacman -Syu...\n")
 	if runtime.GOOS == "windows" {
@@ -475,7 +475,7 @@ func main() {
 	if inArray(features, "6") {
 		fmt.Fprintf(w, "cloning tinfoil...\n")
 		_, err = git.PlainClone("build/tinfoil", false, &git.CloneOptions{
-			URL: "https://github.com/XorTroll/Tinfoil.git",
+			URL: "https://github.com/ThatNerdyPikachu/Tinfoil.git",
 		})
 		if err != nil && err.Error() != "repository already exists" {
 			errCheck(&w, "cloning tinfoil", err)

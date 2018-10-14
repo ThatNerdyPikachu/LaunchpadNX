@@ -22,11 +22,11 @@ import (
 )
 
 func resetTerm(w *io.Writer) {
-	fmt.Fprintf(w, "\x1b[0m")
+	fmt.Fprintf(*w, "\x1b[0m")
 }
 
 func input(w *io.Writer, prompt string) string {
-	fmt.Fprintf(w, prompt)
+	fmt.Fprintf(*w, prompt)
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	return scanner.Text()
@@ -39,7 +39,7 @@ func wait() {
 
 func errCheck(w *io.Writer, task string, err error) {
 	if err != nil {
-		fmt.Fprintf(w, "\x1b[91man error occured while %s:\n", task)
+		fmt.Fprintf(*w, "\x1b[91man error occured while %s:\n", task)
 		panic(err)
 	}
 }
@@ -92,8 +92,8 @@ func copyFolder(src, dst string) error {
 func main() {
 	w := ansicolor.NewAnsiColorWriter(os.Stdout)
 
-	resetTerm(w)
-	defer resetTerm(w)
+	resetTerm(&w)
+	defer resetTerm(&w)
 
 	if runtime.GOOS == "windows" {
 		// check for reqs
@@ -103,7 +103,7 @@ func main() {
 			if err != nil {
 				fmt.Fprintf(w, "\x1b[91msorry, but you need \x1b[21m%s\x1b[1m to continue!\n", v)
 				fmt.Fprintf(w, "press any key to exit")
-				resetTerm(w)
+				resetTerm(&w)
 				wait()
 				os.Exit(1)
 			}
@@ -122,7 +122,7 @@ func main() {
 			if err != nil {
 				fmt.Fprintf(w, "\x1b[91msorry, but you need \x1b[21m%s\x1b[1m to continue!\n", v)
 				fmt.Fprintf(w, "press any key to exit")
-				resetTerm(w)
+				resetTerm(&w)
 				wait()
 				os.Exit(1)
 			}
@@ -130,7 +130,7 @@ func main() {
 	} else {
 		fmt.Fprintf(w, "\x1b[91msorry, launchpadnx does not yet support your operating system! make sure to open a github issue!\n")
 		fmt.Fprintf(w, "press any key to exit")
-		resetTerm(w)
+		resetTerm(&w)
 		wait()
 		os.Exit(1)
 	}
@@ -162,7 +162,7 @@ func main() {
 			features = []string{"1", "2", "3", "4", "5", "6"}
 			break
 		} else if features[0] == "exit" {
-			resetTerm(w)
+			resetTerm(&w)
 			os.Exit(0)
 		} else if features[0] == "" {
 			continue
@@ -208,7 +208,7 @@ func main() {
 				break
 			} else if strings.ToLower(resp) == "n" {
 				fmt.Fprintf(w, "build aborted.\n")
-				resetTerm(w)
+				resetTerm(&w)
 				os.Exit(0)
 			}
 		}

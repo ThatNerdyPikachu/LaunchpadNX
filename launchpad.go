@@ -142,8 +142,8 @@ func main() {
 	fmt.Fprintf(w, "now here comes the fun part, selecting your features!\n")
 	fmt.Fprintf(w, "here are your feature choices (note: as usual, atmosphere's base is selected by default):\n")
 	selections := []string{
-		"checkpoint (a save manager)",
 		"hbmenu",
+		"jksv (a save manager",
 		"layeredfs (game mods)",
 		"sigpatches",
 		"sys-ftpd (a background ftp server)",
@@ -158,8 +158,11 @@ func main() {
 	for {
 		resp := input(&w, "\x1b[94mplease type the numbers of the features that you want, seperated by spaces (or type '\x1b[91mall\x1b[94m' to compile everything): ")
 		features = strings.Split(resp, " ")
-		if features[0] == "all" {
+		if features[0] == "all" && !inArray(features, "no-hbl") {
 			features = []string{"1", "2", "3", "4", "5", "6"}
+			break
+		} else if features[0] == "all" && inArray(features, "no-hbl") {
+			features = []string{"1", "2", "3", "4", "5", "6", "no-hbl"}
 			break
 		} else if features[0] == "exit" {
 			resetTerm(&w)
@@ -262,11 +265,11 @@ func main() {
 	}
 
 	if inArray(features, "1") {
-		args = append(args, "switch-freetype")
+		args = append(args, "switch-freetype", "switch-libconfig", "switch-libjpeg-turbo")
 	}
 
 	if inArray(features, "2") {
-		args = append(args, "switch-freetype", "switch-libconfig", "switch-libjpeg-turbo")
+		args = append(args, "switch-freetype", "switch-libpng", "switch-libjpeg-turbo")
 	}
 
 	if inArray(features, "5") {
@@ -384,43 +387,24 @@ func main() {
 		c = []string{"kip1=cfw/*", "secmon=cfw/exosphere.bin"}
 	}
 
-	if inArray(features, "1") {
-		fmt.Fprintf(w, "cloning checkpoint...\n")
-		_, err = git.PlainClone("build/checkpoint", false, &git.CloneOptions{
-			URL: "https://github.com/FlagBrew/Checkpoint.git",
-		})
-		if err != nil && err.Error() != "repository already exists" {
-			errCheck(&w, "cloning checkpoint", err)
+	if inArray(features, "1") || inArray(features, "2") || inArray(features, "6") {
+		if !inArray(features, "no-hbl") {
+			fmt.Fprintf(w, "cloning hbloader...\n")
+			_, err = git.PlainClone("build/hbloader", false, &git.CloneOptions{
+				URL: "https://github.com/switchbrew/nx-hbloader.git",
+			})
+			if err != nil && err.Error() != "repository already exists" {
+				errCheck(&w, "cloning hbloader", err)
+
+				fmt.Fprintf(w, "building hbloader...\n")
+				cmd := exec.Command("make", "-j")
+				cmd.Dir = "build/hbloader"
+				errCheck(&w, "building hbloader", cmd.Run())
+
+				fmt.Fprintf(w, "copying files...\n")
+				errCheck(&w, "copying hbloader", copyFile("build/hbloader/hbl.nsp", "sd_root/atmosphere/hbl.nsp"))
+			}
 		}
-
-		fmt.Fprintf(w, "building checkpoint...\n")
-		cmd := exec.Command("make", "-j")
-		cmd.Dir = "build/checkpoint/switch"
-		errCheck(&w, "building checkpoint", cmd.Run())
-
-		fmt.Fprintf(w, "copying files...\n")
-		errCheck(&w, "creating sd_root/switch", os.MkdirAll("sd_root/switch", 0700))
-		errCheck(&w, "creating sd_root/switch/Checkpoint", os.MkdirAll("sd_root/switch/Checkpoint", 0700))
-		errCheck(&w, "copying checkpoint", copyFile("build/checkpoint/switch/out/Checkpoint.nro",
-			"sd_root/switch/Checkpoint/Checkpoint.nro"))
-	}
-
-	if inArray(features, "2") || inArray(features, "1") || inArray(features, "6") {
-		fmt.Fprintf(w, "cloning hbloader...\n")
-		_, err = git.PlainClone("build/hbloader", false, &git.CloneOptions{
-			URL: "https://github.com/switchbrew/nx-hbloader.git",
-		})
-		if err != nil && err.Error() != "repository already exists" {
-			errCheck(&w, "cloning hbloader", err)
-		}
-
-		fmt.Fprintf(w, "building hbloader...\n")
-		cmd := exec.Command("make", "-j")
-		cmd.Dir = "build/hbloader"
-		errCheck(&w, "building hbloader", cmd.Run())
-
-		fmt.Fprintf(w, "copying files...\n")
-		errCheck(&w, "copying hbloader", copyFile("build/hbloader/hbl.nsp", "sd_root/atmosphere/hbl.nsp"))
 
 		fmt.Fprintf(w, "cloning hbmenu...\n")
 		_, err = git.PlainClone("build/hbmenu", false, &git.CloneOptions{
@@ -437,6 +421,25 @@ func main() {
 
 		fmt.Fprintf(w, "copying files...\n")
 		errCheck(&w, "copying hbmenu", copyFile("build/hbmenu/hbmenu.nro", "sd_root/hbmenu.nro"))
+	}
+
+	if inArray(features, "2") {
+		fmt.Fprintf(w, "cloning jksv...\n")
+		_, err = git.PlainClone("build/jksv", false, &git.CloneOptions{
+			URL: "https://github.com/J-D-K/JKSV.git",
+		})
+		if err != nil && err.Error() != "repository already exists" {
+			errCheck(&w, "cloning jksv", err)
+		}
+
+		fmt.Fprintf(w, "building jksv...\n")
+		cmd := exec.Command("make", "-j")
+		cmd.Dir = "build/jksv"
+		errCheck(&w, "building jksv", cmd.Run())
+
+		fmt.Fprintf(w, "copying files...\n")
+		errCheck(&w, "creating sd_root/switch", os.MkdirAll("sd_root/switch", 0700))
+		errCheck(&w, "copying jksv", copyFile("build/jksv/JKSV.nro", "sd_root/switch/JKSV.nro"))
 	}
 
 	if inArray(features, "3") {
@@ -475,7 +478,7 @@ func main() {
 	if inArray(features, "6") {
 		fmt.Fprintf(w, "cloning tinfoil...\n")
 		_, err = git.PlainClone("build/tinfoil", false, &git.CloneOptions{
-			URL: "https://github.com/ThatNerdyPikachu/Tinfoil.git",
+			URL: "https://github.com/XorTroll/Tinfoil.git",
 		})
 		if err != nil && err.Error() != "repository already exists" {
 			errCheck(&w, "cloning tinfoil", err)

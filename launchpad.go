@@ -158,10 +158,10 @@ func main() {
 		resp := input(&w, "\x1b[94mplease type the numbers of the features that you want, seperated by spaces (or type '\x1b[91mall\x1b[94m' to compile everything): ")
 		features = strings.Split(resp, " ")
 		if features[0] == "all" && !inArray(features, "no-hbl") {
-			features = []string{"1", "2", "3", "4", "5", "6"}
+			features = []string{"1", "2", "3", "4", "5"}
 			break
 		} else if features[0] == "all" && inArray(features, "no-hbl") {
-			features = []string{"1", "2", "3", "4", "5", "6", "no-hbl"}
+			features = []string{"1", "2", "3", "4", "5", "no-hbl"}
 			break
 		} else if features[0] == "exit" {
 			resetTerm(&w)
@@ -169,7 +169,7 @@ func main() {
 		} else if features[0] == "" {
 			continue
 		}
-		nums := []int{1, 2, 3, 4, 5, 6}
+		nums := [5]int{1, 2, 3, 4, 5}
 		good := false
 		for _, v := range nums {
 			i, err := strconv.Atoi(features[0])
@@ -332,14 +332,11 @@ func main() {
 	errCheck(&w, "building stratosphere", cmd.Run())
 
 	fmt.Fprintf(w, "copying files...\n")
-	errCheck(&w, "creating sd_root/atmosphere/titles/0100000000000036/exefs",
-		os.MkdirAll("sd_root/atmosphere/titles/0100000000000036/exefs", 0700))
+	errCheck(&w, "creating sd_root/atmosphere/titles/0100000000000036",
+		os.MkdirAll("sd_root/atmosphere/titles/0100000000000036", 0700))
 
-	errCheck(&w, "copying creport's npdm", copyFile("build/atmosphere/stratosphere/creport/creport.npdm",
-		"sd_root/atmosphere/titles/0100000000000036/exefs/main.npdm"))
-
-	errCheck(&w, "copying creport's npdm", copyFile("build/atmosphere/stratosphere/creport/creport.nso",
-		"sd_root/atmosphere/titles/0100000000000036/exefs/main"))
+	errCheck(&w, "copying creport's npdm", copyFile("build/atmosphere/stratosphere/creport/creport.nsp",
+		"sd_root/atmosphere/titles/0100000000000036/exefs.nsp"))
 	errCheck(&w, "creating sd_root/cfw", os.MkdirAll("sd_root/cfw", 0700))
 
 	errCheck(&w, "copying exosphere", copyFile("build/atmosphere/exosphere/exosphere.bin",

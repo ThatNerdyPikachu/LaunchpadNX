@@ -143,7 +143,6 @@ func main() {
 	fmt.Fprintf(w, "here are your feature choices (note: as usual, atmosphere's base is selected by default):\n")
 	selections := []string{
 		"hbmenu",
-		"jksv (a save manager",
 		"layeredfs (game mods)",
 		"sigpatches",
 		"sys-ftpd (a background ftp server)",
@@ -233,6 +232,12 @@ func main() {
 			if err != nil && err.Error() != "already up-to-date" {
 				errCheck(&w, "updating the sources for "+f, err)
 			}
+
+			submodules, err := wt.Submodules()
+			errCheck(&w, "getting the submodules for "+f, err)
+
+			err = submodules.Update(&git.SubmoduleUpdateOptions{})
+			errCheck(&w, "updating the submodules for "+f, err)
 		}
 	}
 
@@ -264,20 +269,19 @@ func main() {
 		}
 	}
 
+	// LIBS	:= `freetype-config --libs` -lconfig -lturbojpeg
 	if inArray(features, "1") {
 		args = append(args, "switch-freetype", "switch-libconfig", "switch-libjpeg-turbo")
 	}
 
-	if inArray(features, "2") {
-		args = append(args, "switch-freetype", "switch-libpng", "switch-libjpeg-turbo")
-	}
-
-	if inArray(features, "5") {
+	// LIBS	:= -lnx -lmpg123 -lm
+	if inArray(features, "4") {
 		args = append(args, "switch-mpg123")
 	}
 
-	if inArray(features, "6") {
-		args = append(args, "switch-curl")
+	// LIBS	:= `freetype-config --libs` -lcurl -lz -lnx
+	if inArray(features, "5") {
+		args = append(args, "switch-freetype", "switch-curl", "switch-zlib")
 	}
 
 	if runtime.GOOS == "windows" {
@@ -387,7 +391,7 @@ func main() {
 		c = []string{"kip1=cfw/*", "secmon=cfw/exosphere.bin"}
 	}
 
-	if inArray(features, "1") || inArray(features, "2") || inArray(features, "6") {
+	if inArray(features, "1") || inArray(features, "4") {
 		if !inArray(features, "no-hbl") {
 			fmt.Fprintf(w, "cloning hbloader...\n")
 			_, err = git.PlainClone("build/hbloader", false, &git.CloneOptions{
@@ -395,15 +399,15 @@ func main() {
 			})
 			if err != nil && err.Error() != "repository already exists" {
 				errCheck(&w, "cloning hbloader", err)
-
-				fmt.Fprintf(w, "building hbloader...\n")
-				cmd := exec.Command("make", "-j")
-				cmd.Dir = "build/hbloader"
-				errCheck(&w, "building hbloader", cmd.Run())
-
-				fmt.Fprintf(w, "copying files...\n")
-				errCheck(&w, "copying hbloader", copyFile("build/hbloader/hbl.nsp", "sd_root/atmosphere/hbl.nsp"))
 			}
+
+			fmt.Fprintf(w, "building hbloader...\n")
+			cmd := exec.Command("make", "-j")
+			cmd.Dir = "build/hbloader"
+			errCheck(&w, "building hbloader", cmd.Run())
+
+			fmt.Fprintf(w, "copying files...\n")
+			errCheck(&w, "copying hbloader", copyFile("build/hbloader/hbl.nsp", "sd_root/atmosphere/hbl.nsp"))
 		}
 
 		fmt.Fprintf(w, "cloning hbmenu...\n")
@@ -424,39 +428,20 @@ func main() {
 	}
 
 	if inArray(features, "2") {
-		fmt.Fprintf(w, "cloning jksv...\n")
-		_, err = git.PlainClone("build/jksv", false, &git.CloneOptions{
-			URL: "https://github.com/J-D-K/JKSV.git",
-		})
-		if err != nil && err.Error() != "repository already exists" {
-			errCheck(&w, "cloning jksv", err)
-		}
-
-		fmt.Fprintf(w, "building jksv...\n")
-		cmd := exec.Command("make", "-j")
-		cmd.Dir = "build/jksv"
-		errCheck(&w, "building jksv", cmd.Run())
-
-		fmt.Fprintf(w, "copying files...\n")
-		errCheck(&w, "creating sd_root/switch", os.MkdirAll("sd_root/switch", 0700))
-		errCheck(&w, "copying jksv", copyFile("build/jksv/JKSV.nro", "sd_root/switch/JKSV.nro"))
-	}
-
-	if inArray(features, "3") {
 		fmt.Fprintf(w, "copying files...\n")
 		errCheck(&w, "copying fs_mitm (layeredfs)", copyFile("build/atmosphere/stratosphere/fs_mitm/fs_mitm.kip",
 			"sd_root/cfw/fs_mitm.kip"))
 		c = append(c, "atmosphere=1")
 	}
 
-	if inArray(features, "4") {
+	if inArray(features, "3") {
 		errCheck(&w, "creating sd_root/atmosphere/exefs_patches", os.MkdirAll("sd_root/atmosphere/exefs_patches", 0700))
 		fmt.Fprintf(w, "copying files...\n")
 		errCheck(&w, "copying fake_tickets (sigpatches)", copyFolder("fake_tickets",
 			"sd_root/atmosphere/exefs_patches/fake_tickets"))
 	}
 
-	if inArray(features, "5") {
+	if inArray(features, "4") {
 		fmt.Fprintf(w, "cloning sys-ftpd...\n")
 		_, err = git.PlainClone("build/sys-ftpd", false, &git.CloneOptions{
 			URL: "https://github.com/jakibaki/sys-ftpd.git",
@@ -475,7 +460,7 @@ func main() {
 		errCheck(&w, "copying sys-ftpd", copyFile("build/sys-ftpd/sys-ftpd.kip", "sd_root/cfw/sys-ftpd.kip"))
 	}
 
-	if inArray(features, "6") {
+	if inArray(features, "5") {
 		fmt.Fprintf(w, "cloning tinfoil...\n")
 		_, err = git.PlainClone("build/tinfoil", false, &git.CloneOptions{
 			URL: "https://github.com/XorTroll/Tinfoil.git",

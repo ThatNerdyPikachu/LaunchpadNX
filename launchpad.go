@@ -169,7 +169,7 @@ func main() {
 		} else if features[0] == "" {
 			continue
 		}
-		nums := [5]int{1, 2, 3, 4, 5}
+		nums := []int{1, 2, 3, 4, 5}
 		good := false
 		for _, v := range nums {
 			i, err := strconv.Atoi(features[0])
@@ -216,7 +216,7 @@ func main() {
 		}
 	}
 
-	folders := []string{"build/atmosphere", "build/hekate", "build/checkpoint",
+	folders := []string{"build/atmosphere", "build/hekate",
 		"build/hbmenu", "build/sys-ftpd", "build/tinfoil"}
 
 	for _, f := range folders {

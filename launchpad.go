@@ -216,7 +216,7 @@ func main() {
 		}
 	}
 
-	folders := []string{"build/atmosphere", "build/hekate",
+	folders := []string{"build/atmosphere", "build/atmosphere/common/include/boost", "build/hekate",
 		"build/hbmenu", "build/sys-ftpd", "build/tinfoil"}
 
 	for _, f := range folders {
@@ -321,6 +321,13 @@ func main() {
 		errCheck(&w, "cloning atmosphere", err)
 	}
 
+	_, err = git.PlainClone("build/atmosphere/common/include/boost", false, &git.CloneOptions{
+		URL: "https://github.com/Atmosphere-NX/ext-boost.git",
+	})
+	if err != nil && err.Error() != "repository already exists" {
+		errCheck(&w, "cloning ext-boost", err)
+	}
+
 	fmt.Fprintf(w, "building exosphere...\n")
 	cmd = exec.Command("make", "-j")
 	cmd.Dir = "build/atmosphere/exosphere"
@@ -335,7 +342,7 @@ func main() {
 	errCheck(&w, "creating sd_root/atmosphere/titles/0100000000000036",
 		os.MkdirAll("sd_root/atmosphere/titles/0100000000000036", 0700))
 
-	errCheck(&w, "copying creport's npdm", copyFile("build/atmosphere/stratosphere/creport/creport.nsp",
+	errCheck(&w, "copying creport's exefs", copyFile("build/atmosphere/stratosphere/creport/creport.nsp",
 		"sd_root/atmosphere/titles/0100000000000036/exefs.nsp"))
 	errCheck(&w, "creating sd_root/cfw", os.MkdirAll("sd_root/cfw", 0700))
 
@@ -346,6 +353,12 @@ func main() {
 		"sd_root/cfw/loader.kip"))
 
 	errCheck(&w, "copying pm", copyFile("build/atmosphere/stratosphere/pm/pm.kip", "sd_root/cfw/pm.kip"))
+
+	errCheck(&w, "creating sd_root/atmosphere/titles/0100000000000032",
+		os.MkdirAll("sd_root/atmosphere/titles/0100000000000032", 0700))
+
+	errCheck(&w, "copying set.mitm's exefs", copyFile("build/atmosphere/stratosphere/set_mitm/set_mitm.nsp",
+		"sd_root/atmosphere/titles/0100000000000032/exefs.nsp"))
 
 	errCheck(&w, "copying sm", copyFile("build/atmosphere/stratosphere/sm/sm.kip", "sd_root/cfw/sm.kip"))
 

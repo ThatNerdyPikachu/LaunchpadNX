@@ -89,6 +89,16 @@ func copyFolder(src, dst string) error {
 	return nil
 }
 
+func touch(path string) error {
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	f.Close()
+
+	return nil
+}
+
 func main() {
 	w := ansicolor.NewAnsiColorWriter(os.Stdout)
 
@@ -232,12 +242,6 @@ func main() {
 			if err != nil && err.Error() != "already up-to-date" {
 				errCheck(&w, "updating the sources for "+f, err)
 			}
-
-			submodules, err := wt.Submodules()
-			errCheck(&w, "getting the submodules for "+f, err)
-
-			err = submodules.Update(&git.SubmoduleUpdateOptions{})
-			errCheck(&w, "updating the submodules for "+f, err)
 		}
 	}
 
@@ -359,6 +363,9 @@ func main() {
 
 	errCheck(&w, "copying set.mitm's exefs", copyFile("build/atmosphere/stratosphere/set_mitm/set_mitm.nsp",
 		"sd_root/atmosphere/titles/0100000000000032/exefs.nsp"))
+
+	errCheck(&w, "creating sd_root/atmosphere/titles/0100000000000032/boot2.flag",
+		touch("sd_root/atmosphere/titles/0100000000000032/boot2.flag"))
 
 	errCheck(&w, "copying sm", copyFile("build/atmosphere/stratosphere/sm/sm.kip", "sd_root/cfw/sm.kip"))
 
